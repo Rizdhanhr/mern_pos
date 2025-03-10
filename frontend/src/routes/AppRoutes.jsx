@@ -1,5 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import PublicRoute from "./PublicRoutes";
+import PrivateRoute from "./PrivateRoutes";
 import BrandIndex from "../pages/brand/Index";
 import BrandCreate from "../pages/brand/Create";
 import BrandEdit from "../pages/brand/Edit";
@@ -13,12 +15,47 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* Autentikasi */}
-      <Route path="/login" element={<LoginIndex />} />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginIndex />
+          </PublicRoute>
+        }
+      />
 
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/brand" element={<BrandIndex />} />
-      <Route path="/brand/create" element={<BrandCreate />} />
-      <Route path="/brand/:id/edit" element={<BrandEdit />} />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/brand"
+        element={
+          <PrivateRoute>
+            <BrandIndex />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/brand/create"
+        element={
+          <PrivateRoute>
+            <BrandCreate />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/brand/:id/edit"
+        element={
+          <PrivateRoute>
+            <BrandEdit />
+          </PrivateRoute>
+        }
+      />
 
       {/* Error Page */}
       <Route path="/404" element={<NotFound />} />
