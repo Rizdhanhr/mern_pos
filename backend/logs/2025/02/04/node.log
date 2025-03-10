@@ -1,0 +1,21 @@
+2025-02-04 15:17:23 [ERROR]: Error: connect ECONNREFUSED 127.0.0.1:3306, Stack: SequelizeConnectionRefusedError: connect ECONNREFUSED 127.0.0.1:3306
+    at ConnectionManager.connect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\mysql\connection-manager.js:92:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ConnectionManager._connect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:222:24)
+    at async D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:174:32
+    at async ConnectionManager.getConnection (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:197:7)
+    at async D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\sequelize.js:305:26
+    at async MySQLQueryInterface.rawSelect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\query-interface.js:434:18)
+    at async Brand.aggregate (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\model.js:1277:19)
+    at async Brand.count (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\model.js:1306:20)
+    at async brandData (D:\Project\Express\MernStack\backend\controllers\brandController.js:36:25)
+2025-02-04 15:17:23 [ERROR]: Error: connect ECONNREFUSED 127.0.0.1:3306, Stack: SequelizeConnectionRefusedError: connect ECONNREFUSED 127.0.0.1:3306
+    at ConnectionManager.connect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\mysql\connection-manager.js:92:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ConnectionManager._connect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:222:24)
+    at async D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:174:32
+2025-02-04 15:17:23 [ERROR]: Error: connect ECONNREFUSED 127.0.0.1:3306, Stack: SequelizeConnectionRefusedError: connect ECONNREFUSED 127.0.0.1:3306
+    at ConnectionManager.connect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\mysql\connection-manager.js:92:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ConnectionManager._connect (D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:222:24)
+    at async D:\Project\Express\MernStack\backend\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:174:32

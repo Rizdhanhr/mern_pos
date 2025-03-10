@@ -1,0 +1,9 @@
+2025-02-03 15:09:32 [ERROR]: Error: data is not defined, Stack: ReferenceError: data is not defined
+    at brandUpdate (D:\Project\Express\MernStack\backend\controllers\brandController.js:140:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-02-03 15:10:09 [ERROR]: Error: data is not defined, Stack: ReferenceError: data is not defined
+    at brandUpdate (D:\Project\Express\MernStack\backend\controllers\brandController.js:140:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-02-03 15:10:21 [ERROR]: Error: data is not defined, Stack: ReferenceError: data is not defined
+    at brandUpdate (D:\Project\Express\MernStack\backend\controllers\brandController.js:140:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)

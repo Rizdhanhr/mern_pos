@@ -1,0 +1,31 @@
+.page-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.empty-state {
+  text-align: center;
+}
+
+.empty-state-icon svg {
+  color: #f44336; /* Merah untuk menunjukkan error */
+}
+
+.empty-state-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+}
+
+.empty-state-subtitle {
+  font-size: 18px;
+  color: #555;
+  margin: 10px 0;
+}
+
+.empty-state-action .btn {
+  margin-top: 20px;
+}

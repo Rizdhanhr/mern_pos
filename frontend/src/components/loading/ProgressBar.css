@@ -1,0 +1,12 @@
+#nprogress .bar {
+          background: #007bff; /* Warna biru */
+          height: 3px;
+        }
+
+        #nprogress .peg {
+          box-shadow: 0 0 10px #007bff, 0 0 5px #007bff;
+        }
+
+        #nprogress .spinner-icon {
+          display: none; /* Sembunyikan spinner */
+        }
