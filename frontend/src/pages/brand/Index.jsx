@@ -101,7 +101,8 @@ export default function BrandIndex(){
             <LayoutsAuth title={title} button={<ButtonCreate link={'/brand/create'} name={'Create Brand'} />}>
                 <Cards>
                     <SearchInput search={search} setSearch={setSearch} />
-                     <CustomDataTable
+                    <div className="table-responsive">
+<CustomDataTable
                         columns={columns}
                         data={data}
                         totalRows={totalRows}
@@ -110,6 +111,8 @@ export default function BrandIndex(){
                         handleSort={handleSort}
                         loading={loading}
                     />
+                    </div>
+                     
                 </Cards>
             </LayoutsAuth>
         </>

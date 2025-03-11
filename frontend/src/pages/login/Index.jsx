@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Logo from '../../assets/logo1.png';
 import { useNavigate } from "react-router-dom";
-import LoginService from "../../services/loginService";
+import AuthService from "../../services/authService";
 import LoadingOverlay from "../../components/loading/LoadingOverlay";
 import { errorValidation } from "../../utils/errorParser";
 import { setToken } from "../../utils/authHelper";
@@ -23,7 +23,7 @@ export default function LoginIndex() {
     try {
       e.preventDefault();
      
-      const response = await LoginService.loginStore(form); 
+      const response = await AuthService.loginStore(form); 
       setToken(response.data.token);
       navigate("/");
     } catch (error) { 

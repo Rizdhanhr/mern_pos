@@ -5,9 +5,13 @@ const errorHandler = (err, req, res, next) => {
   const env = process.env.NODE_ENV || "development";
   const errorResponse = {
     success: false,
-    message: err.message || "Something went wrong",
-    ...(env === "development" && { stack: err.stack })
+    message: err.message || "Something went wrong"
   };
+
+  if (env === "development") {
+    errorResponse.stack = err.stack;
+  }
+
   return res.status(statusCode).json(errorResponse);
 };
 

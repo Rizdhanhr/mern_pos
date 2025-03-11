@@ -85,9 +85,10 @@ async function brandData(req, res, next) {
   }
 }
 
-async function brandStore(req, res) {
+async function brandStore(req, res, next) {
   try {
-    await Brand.create({ name: req.body.name });
+    console.log(req.user);
+    await Brand.create({ name: req.body.name }, { user: req.user });
     return res.status(200).json({ success: true, message: "Data Created" });
   } catch (error) {
     next(error);
@@ -97,16 +98,12 @@ async function brandStore(req, res) {
 async function brandShow(req, res, next) {
   try {
     const { id } = req.params;
-    const brand = await Brand.findOne({
-      where: { id: id }
-    });
-
-    if (!brand) {
-      const error = new Error("Data not found");
-      error.status = 404;
-      throw error;
-    }
-
+    const brand = await Brand.findOrFail(
+      {
+        where: { id: id }
+      },
+      res
+    );
     const data = {
       id: brand.id,
       name: brand.name,
@@ -123,18 +120,15 @@ async function brandShow(req, res, next) {
 async function brandUpdate(req, res, next) {
   try {
     const id = req.params.id;
-    const brand = await Brand.findOne({
-      where: { id: id }
-    });
-
-    if (!brand) {
-      const error = new Error("Data not found");
-      error.status = 404;
-      throw error;
-    }
+    const brand = await Brand.findOrFail(
+      {
+        where: { id: id }
+      },
+      res
+    );
 
     brand.name = req.body.name;
-    await brand.save();
+    await brand.save({ user: req.user });
     return res.status(200).json({ succes: true, message: "Data Updated" });
   } catch (error) {
     next(error);
@@ -144,15 +138,12 @@ async function brandUpdate(req, res, next) {
 async function brandDelete(req, res, next) {
   try {
     const id = req.params.id;
-    const brand = await Brand.findOne({
-      where: { id: id }
-    });
-
-    if (!brand) {
-      const error = new Error("Data not found");
-      error.status = 404;
-      throw error;
-    }
+    const brand = await Brand.findOrFail(
+      {
+        where: { id: id }
+      },
+      res
+    );
 
     await brand.destroy();
 

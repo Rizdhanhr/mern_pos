@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const logger = require("../config/logger");
 const sequelize = require("../config/db");
+const Role = require("../models/Role");
 
 async function getUser(req, res, next) {
   try {
@@ -10,7 +11,14 @@ async function getUser(req, res, next) {
       where: {
         id: req.user.id
       },
-      attributes: ["id", "name", "email", "role_id"]
+      attributes: ["id", "name", "email", "role_id"],
+      include: [
+        {
+          model: Role,
+          attributes: ["id", "name"],
+          as: "role"
+        }
+      ]
     });
 
     res.status(200).json({ success: true, data: user });

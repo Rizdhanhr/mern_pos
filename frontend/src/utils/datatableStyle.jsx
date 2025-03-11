@@ -14,12 +14,14 @@ export const customDataTableStyles = {
   },
   cells: {
     style: {
+      overflow: "visible",
       borderBottom: "1px solid #ddd", // Border bawah sel data
       borderRight: "1px solid #ddd" // Border kanan sel data
     }
   },
   rows: {
     style: {
+      overflow: "visible",
       borderLeft: "1px solid #ddd", // Border kiri untuk seluruh baris
       borderRight: "1px solid #ddd" // Border kanan untuk seluruh baris
     }

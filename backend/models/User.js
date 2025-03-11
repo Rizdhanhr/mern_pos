@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize"); // Import DataTypes
 const sequelize = require("../config/db");
+const applyFindOrFail = require("../helper/findOrFailHelper");
+const Role = require("./Role");
 
 const User = sequelize.define(
   "User",
@@ -39,5 +41,9 @@ const User = sequelize.define(
     updatedAt: "updated_at"
   }
 );
+
+User.belongsTo(Role, { foreignKey: "role_id", as: "role" });
+
+applyFindOrFail(User);
 
 module.exports = User;

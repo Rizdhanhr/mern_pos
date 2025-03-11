@@ -1,0 +1,9 @@
+/* Pastikan dropdown berada di atas dan bisa keluar dari batas tabel */
+.dropdown-menu-new {
+  position: fixed !important;
+  z-index: 1000;
+  display: none;
+  overflow-y: auto;
+  min-width: 150px;
+  transform: translateY(8px);
+}

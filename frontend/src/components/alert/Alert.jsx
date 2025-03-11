@@ -29,8 +29,8 @@ export const alertConfirmDelete = onDelete => {
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "Cancel",
-    reverseButtons: true
+    cancelButtonText: "Cancel"
+    // reverseButtons: true
   }).then(result => {
     if (result.isConfirmed) {
       onDelete();

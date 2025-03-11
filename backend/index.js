@@ -13,25 +13,27 @@ const userRouter = require("./routes/user");
 const dashboardRouter = require("./routes/dashboard");
 const brandRouter = require("./routes/brand");
 const categoryRouter = require("./routes/category");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: FRONTEND
+    origin: FRONTEND,
+    credentials: true
   })
 );
 
 //Routing Authentication
-app.use("/login", authRouter);
-
+app.use("/", authRouter);
 //Routing Admin
+app.use("/", authenticate, dashboardRouter);
 app.use("/user", authenticate, userRouter);
-app.use("/", dashboardRouter);
-app.use("/brand", brandRouter);
+app.use("/brand", authenticate, brandRouter);
 app.use("/category", categoryRouter);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log("hello world!"));
+app.listen(PORT, () => console.log("started!"));

@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from '../assets/logo1.png';
 import { Link, useLocation } from "react-router-dom";
+import { removeToken } from "../utils/authHelper";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserData } from "../store/userSlice";
+
+
+
 export default function Navbar() {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.userInfo); 
+
+    useEffect(() => {
+        if (!user ) {
+            dispatch(getUserData());
+        }
+        
+    }, [dispatch, user]);
+
     const location = useLocation();
     const isActive = (paths) => {
         return paths.some((path) => {
@@ -11,6 +27,11 @@ export default function Navbar() {
                 return location.pathname.startsWith(path); // Cocok jika path adalah awalan
         });
     };
+
+    async function signOut() {
+        await removeToken();
+        window.location.href = '/login';
+    }
 
     return (
         <>
@@ -49,9 +70,9 @@ export default function Navbar() {
                                         }}
                                     />
                                     <div className="d-none d-xl-block ps-2">
-                                        <div>User</div>
+                                        <div>{user && user.name}</div>
                                         <div className="mt-1 small text-muted">
-                                            Role
+                                            {user && user.role.name}
                                         </div>
                                     </div>
                                 </a>
@@ -59,7 +80,7 @@ export default function Navbar() {
                                     <a href="./settings.html" className="dropdown-item">
                                         Settings
                                     </a>
-                                    <a className="dropdown-item">
+                                    <a onClick={() => signOut()} className="dropdown-item">
                                         Logout
                                     </a>
                                 </div>

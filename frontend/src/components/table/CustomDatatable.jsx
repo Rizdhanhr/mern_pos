@@ -26,6 +26,7 @@ const CustomDataTable = ({
       highlightOnHover
       sortServer
       customStyles={customDataTableStyles}
+      className="!overflow-x-clip !overflow-y-visible"
     />
   );
 };

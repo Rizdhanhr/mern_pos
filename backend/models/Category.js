@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize"); // Import DataTypes
 const sequelize = require("../config/db");
+const applyFindOrFail = require("../helper/findOrFailHelper");
 
 const Category = sequelize.define(
   "Category",
@@ -27,5 +28,5 @@ const Category = sequelize.define(
     updatedAt: "updated_at"
   }
 );
-
+applyFindOrFail(Category);
 module.exports = Category;
