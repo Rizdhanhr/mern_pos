@@ -5,6 +5,7 @@ const categoryValidation = require("../validator/categoryValidator");
 const { validationHandler } = require("../middleware/validationHandler.js");
 
 categoryRouter.get("/", categoryController.categoryIndex);
+categoryRouter.get("/data", categoryController.categoryData);
 categoryRouter.post(
   "/",
   categoryValidation.categoryCreateValidator,

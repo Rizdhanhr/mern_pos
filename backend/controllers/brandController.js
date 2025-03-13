@@ -25,14 +25,13 @@ async function brandData(req, res, next) {
   try {
     const {
       page = 1,
-      limit = 10,
+      perPage = 10,
       search = "",
-      sort = 1,
-      order = "desc"
+      sortColumn = 0,
+      sortOrder = "asc"
     } = req.query;
 
     const column = ["name", "updated_at"];
-
     const totalBrands = await Brand.count({
       where: {
         [Op.or]: [
@@ -65,9 +64,9 @@ async function brandData(req, res, next) {
           }
         ]
       },
-      order: [[column[parseInt(sort)], order]],
-      limit: parseInt(limit),
-      offset: (page - 1) * limit
+      order: [[column[parseInt(sortColumn)], sortOrder]],
+      limit: parseInt(perPage),
+      offset: (page - 1) * perPage
     });
 
     const result = brands.map(br => ({
@@ -87,7 +86,6 @@ async function brandData(req, res, next) {
 
 async function brandStore(req, res, next) {
   try {
-    console.log(req.user);
     await Brand.create({ name: req.body.name }, { user: req.user });
     return res.status(200).json({ success: true, message: "Data Created" });
   } catch (error) {

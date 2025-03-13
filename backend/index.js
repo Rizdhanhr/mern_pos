@@ -27,12 +27,12 @@ app.use(
 );
 
 //Routing Authentication
-app.use("/", authRouter);
+app.use("/api", authRouter);
 //Routing Admin
-app.use("/", authenticate, dashboardRouter);
-app.use("/user", authenticate, userRouter);
-app.use("/brand", authenticate, brandRouter);
-app.use("/category", categoryRouter);
+app.use("/api", authenticate, dashboardRouter);
+app.use("/api/user", authenticate, userRouter);
+app.use("/api/brand", authenticate, brandRouter);
+app.use("/api/category", categoryRouter);
 
 app.use(errorHandler);
 

@@ -1,9 +1,14 @@
-/* Pastikan dropdown berada di atas dan bisa keluar dari batas tabel */
-.dropdown-menu-new {
+/* .dropdown-menu {
   position: fixed !important;
-  z-index: 1000;
-  display: none;
-  overflow-y: auto;
-  min-width: 150px;
-  transform: translateY(8px);
+  z-index: 1500;
+} */
+
+.dropdown {
+  overflow: visible !important; /* Allow overflow */
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Make sure it opens below the button */
+  left: 0;
+  z-index: 1050; /* Ensure it appears above other content */
 }

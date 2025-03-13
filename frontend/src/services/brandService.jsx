@@ -11,15 +11,15 @@ class BrandService {
     perPage = 10,
     search = "",
     sortColumn = 0,
-    sortOrder = "desc"
+    sortOrder = "ascend"
   ) {
     return axiosInstance.get("/brand/data", {
       params: {
         page: page,
-        limit: perPage,
+        perPage: perPage,
         search: search,
-        sort: sortColumn,
-        order: sortOrder
+        sortColumn: sortColumn,
+        sortOrder: sortOrder === "ascend" ? "asc" : "desc"
       }
     });
   }

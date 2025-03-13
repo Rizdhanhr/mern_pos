@@ -102,7 +102,7 @@ export default function Navbar() {
                                             </span>
                                         </Link>
                                     </li>
-                                    <li className={`nav-item dropdown ${isActive(['/brand']) ? 'active' : ''}`}>
+                                    <li className={`nav-item dropdown ${isActive(['/brand','/category']) ? 'active' : ''}`}>
                                         <a
                                             className="nav-link dropdown-toggle"
                                             href="#navbar-base"
@@ -122,6 +122,9 @@ export default function Navbar() {
                                                 <div className="dropdown-menu-column">
                                                     <Link className={`dropdown-item ${isActive(['/brand']) ? 'active' : ''}`} to={'/brand'}>
                                                         Brand
+                                                    </Link>
+                                                    <Link className={`dropdown-item ${isActive(['/category']) ? 'active' : ''}`} to={'/category'}>
+                                                        Category
                                                     </Link>
                                                     
                                                 </div>

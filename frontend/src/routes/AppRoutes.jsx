@@ -2,14 +2,18 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import PublicRoute from "./PublicRoutes";
 import PrivateRoute from "./PrivateRoutes";
-import BrandIndex from "../pages/brand/Index";
-import BrandCreate from "../pages/brand/Create";
-import BrandEdit from "../pages/brand/Edit";
-import Dashboard from "../pages/dashboard/Index";
 import NotFound from "../pages/errors/404";
 import Forbidden from "../pages/errors/403";
 import ServerError from "../pages/errors/500";
 import LoginIndex from "../pages/login/Index";
+import Dashboard from "../pages/dashboard/Index";
+import BrandIndex from "../pages/brand/Index";
+import BrandCreate from "../pages/brand/Create";
+import BrandEdit from "../pages/brand/Edit";
+import CategoryIndex from "../pages/category/Index";
+import CategoryCreate from "../pages/category/Create";
+import CategoryEdit from "../pages/category/Edit";
+import TesIndex from "../pages/tes/Index";
 
 export default function AppRoutes() {
   return (
@@ -57,7 +61,33 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path="/category"
+        element={
+          <PrivateRoute>
+            <CategoryIndex />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/category/create"
+        element={
+          <PrivateRoute>
+            <CategoryCreate />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/category/:id/edit"
+        element={
+          <PrivateRoute>
+            <CategoryEdit />
+          </PrivateRoute>
+        }
+      />
+
       {/* Error Page */}
+      <Route path="/tes" element={<TesIndex />} />
       <Route path="/404" element={<NotFound />} />
       <Route path="/403" element={<Forbidden />} />
       <Route path="/500" element={<ServerError />} />

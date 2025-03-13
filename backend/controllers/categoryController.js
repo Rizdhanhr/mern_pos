@@ -1,7 +1,6 @@
-const connection = require("../config/db");
 const Category = require("../models/Category");
-const { body, validationResult } = require("express-validator");
 const { formatDate } = require("../helper/dateHelper.js");
+const { Op } = require("sequelize");
 
 async function categoryIndex(req, res, next) {
   try {
@@ -21,9 +20,72 @@ async function categoryIndex(req, res, next) {
   }
 }
 
+async function categoryData(req, res, next) {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      search = "",
+      sort = 1,
+      order = "desc"
+    } = req.query;
+
+    const column = ["name", "updated_at"];
+    const totalCategory = await Category.count({
+      where: {
+        [Op.or]: [
+          {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            updated_at: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        ]
+      }
+    });
+
+    const category = await Category.findAll({
+      where: {
+        [Op.or]: [
+          {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            updated_at: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        ]
+      },
+      order: [[column[parseInt(sort)], order]],
+      limit: parseInt(limit),
+      offset: (page - 1) * limit
+    });
+
+    const result = category.map(cr => ({
+      id: cr.id,
+      name: cr.name,
+      created_at: formatDate(cr.created_at),
+      updated_at: formatDate(cr.updated_at)
+    }));
+
+    return res
+      .status(200)
+      .json({ success: true, data: result, total: totalCategory });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function categoryStore(req, res, next) {
   try {
-    await Category.create({ name: req.body.name });
+    await Category.create({ name: req.body.name }, { user: req.user });
     res.status(200).json({ success: true, message: "Data Created" });
   } catch (error) {
     next(error);
@@ -70,7 +132,7 @@ async function categoryUpdate(req, res, next) {
     }
 
     category.name = req.body.name;
-    await category.save();
+    await category.save({ user: req.user });
 
     res.status(200).json({ success: true, message: "Data Updated" });
   } catch (error) {
@@ -101,5 +163,6 @@ module.exports = {
   categoryStore,
   categoryUpdate,
   categoryShow,
-  categoryDelete
+  categoryDelete,
+  categoryData
 };
