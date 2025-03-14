@@ -4,7 +4,10 @@ const { Op } = require("sequelize");
 
 async function categoryIndex(req, res, next) {
   try {
-    const category = await Category.findAll();
+    const category = await Category.findAll({
+      order: [["name", "ASC"]]
+    });
+
     const result = category.map(cr => {
       return {
         id: cr.id,
@@ -24,10 +27,10 @@ async function categoryData(req, res, next) {
   try {
     const {
       page = 1,
-      limit = 10,
+      perPage = 10,
       search = "",
-      sort = 1,
-      order = "desc"
+      sortColumn = 0,
+      sortOrder = "asc"
     } = req.query;
 
     const column = ["name", "updated_at"];
@@ -63,9 +66,9 @@ async function categoryData(req, res, next) {
           }
         ]
       },
-      order: [[column[parseInt(sort)], order]],
-      limit: parseInt(limit),
-      offset: (page - 1) * limit
+      order: [[column[parseInt(sortColumn)], sortOrder]],
+      limit: parseInt(perPage),
+      offset: (page - 1) * perPage
     });
 
     const result = category.map(cr => ({
