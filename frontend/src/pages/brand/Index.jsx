@@ -21,6 +21,7 @@ export default function BrandIndex(){
     const [search, setSearch] = useState("");
     const [total, setTotal] = useState("");
     const [loading, setLoading] = useState(false);
+    
     useEffect(() => {
         getData();
     }, [tableState, search]);
@@ -83,7 +84,7 @@ export default function BrandIndex(){
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/category/${record.id}/edit`});
+                items.push({ label: "Edit", type: "link", link: `/brand/${record.id}/edit`});
                 items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
                 return <ButtonDropdown
                     title="Options"
@@ -93,6 +94,7 @@ export default function BrandIndex(){
             width: 40
         },
     ];
+    
     return(
         <>
             <Helmet>

@@ -4,6 +4,7 @@ import { HelmetProvider } from "react-helmet-async";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ProgressBar from './components/loading/ProgressBar';
 import AppRoutes from './routes/AppRoutes';
+
 function App() {
   
 

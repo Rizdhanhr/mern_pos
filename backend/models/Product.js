@@ -29,6 +29,10 @@ const Product = sequelize.define(
     updated_by: {
       type: DataTypes.INTEGER
       // allowNull: false
+    },
+    status: {
+      type: DataTypes.INTEGER
+      // allowNull: false
     }
   },
   {

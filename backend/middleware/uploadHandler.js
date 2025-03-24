@@ -1,17 +1,13 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
-// Setup storage untuk multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/product"); // Menyimpan file di folder "public/product"
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nama file menggunakan timestamp
-  }
-});
+const uploadDir = path.join(__dirname, "../public/product");
 
-// Validasi ekstensi dan ukuran file
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif/;
   const extname = allowedTypes.test(
@@ -21,15 +17,60 @@ const fileFilter = (req, file, cb) => {
   if (extname && mimetype) {
     return cb(null, true);
   } else {
-    return cb(new Error("Only image files are allowed!"));
+    return cb(
+      new Error("Only image files are allowed! (jpeg, jpg, png, gif)"),
+      false
+    );
   }
 };
 
-// Setup multer dengan limit ukuran file (5MB)
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }
-}).single("image"); // Menggunakan single untuk upload 1 file gambar
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, uploadDir);
+//   },
+//   filename: (req, file, cb) => {
+//     const customFileName = `${Date.now()}-${file.originalname.replace(
+//       /\s+/g,
+//       "_"
+//     )}`;
+//     cb(null, customFileName);
+//   }
+// });
 
-module.exports = upload;
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }
+}).single("image");
+
+const validateImage = (req, res, next) => {
+  upload(req, res, err => {
+    req.validationErrors = req.validationErrors || [];
+
+    if (err) {
+      req.validationErrors.push({
+        type: "field",
+        msg: err.message,
+        path: "image",
+        location: "body"
+      });
+    }
+
+    if (!req.file) {
+      req.validationErrors.push({
+        type: "field",
+        msg: "The image field is required.",
+        path: "image",
+        location: "body"
+      });
+    } else {
+      req.savedImage = req.file.filename; // Simpan nama file untuk digunakan di controller
+    }
+
+    next();
+  });
+};
+
+module.exports = { upload, validateImage };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from '../../assets/logo1.png';
+import Logo from '../../assets/pos_logo.png';
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/authService";
 import LoadingOverlay from "../../components/loading/LoadingOverlay";
@@ -44,8 +44,8 @@ export default function LoginIndex() {
       <div className="page page-center">
         <div className="container container-tight py-4">
           <div className="text-center mb-4">
-            <a href="." className="navbar-brand navbar-brand-autodark">
-              <img src={Logo} height={52} width={70} alt />
+            <a  className="navbar-brand navbar-brand-autodark">
+              <img src={Logo} height={80} width={150}  />
             </a>
           </div>
           <div className="card card-md">

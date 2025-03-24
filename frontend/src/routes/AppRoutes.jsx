@@ -13,7 +13,9 @@ import BrandEdit from "../pages/brand/Edit";
 import CategoryIndex from "../pages/category/Index";
 import CategoryCreate from "../pages/category/Create";
 import CategoryEdit from "../pages/category/Edit";
-import TesIndex from "../pages/tes/Index";
+import ProductIndex from "../pages/product/Index";
+import ProductCreate from "../pages/product/Create";
+import ProductEdit from "../pages/product/Edit";
 
 export default function AppRoutes() {
   return (
@@ -86,8 +88,33 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path="/product"
+        element={
+          <PrivateRoute>
+            <ProductIndex />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/product/create"
+        element={
+          <PrivateRoute>
+            <ProductCreate />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/product/:id/edit"
+        element={
+          <PrivateRoute>
+            <ProductEdit />
+          </PrivateRoute>
+        }
+      />
+
       {/* Error Page */}
-      <Route path="/tes" element={<TesIndex />} />
+
       <Route path="/404" element={<NotFound />} />
       <Route path="/403" element={<Forbidden />} />
       <Route path="/500" element={<ServerError />} />

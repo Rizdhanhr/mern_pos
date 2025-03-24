@@ -1,36 +1,46 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LayoutsAuth from "../../layouts/LayoutsAuth";
 import ButtonCreate from "../../components/button/ButtonCreate";
 import { Helmet } from "react-helmet-async";
 import { Cards } from "../../components/card/Card";
 import CategoryService from "../../services/categoryService";
 import SearchInput from "../../components/input/SearchInput";
-import CustomDataTable from "../../components/table/CustomDatatable";
+import CustomDatatable from "../../components/table/CustomDatatable";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 
 export default function CategoryIndex(){
     const title = "Category";
     const [data, setData] = useState([]);
-    const [totalRows, setTotalRows] = useState(0);
+     const [tableState, setTableState] = useState({
+        page: 1,
+        perPage: 10,
+        sortColumn: 1,
+        sortOrder: 'descend',
+    });
     const [search, setSearch] = useState("");
-    const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(10);
+    const [total, setTotal] = useState("");
     const [loading, setLoading] = useState(false);
-    const [sortColumn, setSortColumn] = useState(1);
-    const [sortOrder, setSortOrder] = useState("desc");
+
     
     useEffect(() => {
         getData();
-    }, [page, perPage, search, sortColumn, sortOrder]);
+    }, [tableState, search]);
 
     async function getData() {
+        setLoading(true);
         try {
-            setLoading(true);
-            const response = await CategoryService.getDatatable(page, perPage, search, sortColumn, sortOrder);
+            const { page, perPage, sortColumn, sortOrder } = tableState;
+            const response = await CategoryService.getDatatable(
+                page,
+                perPage,
+                search,
+                sortColumn,
+                sortOrder
+            );
             setData(response.data.data);
-            setTotalRows(response.data.total);
-            console.log(response.data.data);
+            setTotal(response.data.total);
+          
         } catch (error) {
             console.log(error);
         } finally {
@@ -53,49 +63,41 @@ export default function CategoryIndex(){
 
     const columns = [
         {
-            name: 'Name',
-            selector: row => row.name,
-            sortable: true,
-            sortField: 0,
+            title: "Name",
+            dataIndex: "name",
+            key: " name",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 0 && tableState.sortOrder,
+            columnKey: 0,
+            width: 800,
         },
         {
-            name: 'Last Update',
-            selector: row => row.updated_at,
-            sortable: true,
-            sortField: 1,
-            width : '200px'
+            title: "Last Update",
+            dataIndex: "updated_at",
+            key: "updated_at",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 1 && tableState.sortOrder,
+            columnKey: 1,
         },
         {
-            name: "Action",  
-                cell: row => {
-                    const items = [];
-                    items.push({ label: "Edit", type: "link", link: `/category/${row.id}/edit`});
-                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(row.id)) });
-                    return <ButtonDropdown
-                        title="Options"
-                        items={items}
-                    />
-                },
-            button: "true",
-            allowOverflow: true,
-		
-		
-        }
+            title: "Actions",
+            key: "actions",
+            render: (text, record) => {
+                let items = [];
+                items.push({ label: "Edit", type: "link", link: `/category/${record.id}/edit`});
+                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
+                return <ButtonDropdown
+                    title="Options"
+                    items={items}
+                />
+            },
+            width: 40
+        },
     ];
 
-    const handlePageChange = page => {
-        setPage(page);
-    };
-
-    const handlePerPageChange = (newPerPage, page) => {
-        setPerPage(newPerPage);
-        setPage(page); 
-    };
-
-    const handleSort = (column, sortDirection) => {
-        setSortColumn(column.sortField); 
-        setSortOrder(sortDirection); 
-    };
+    
 
     return(
         <>
@@ -104,18 +106,8 @@ export default function CategoryIndex(){
             </Helmet>
             <LayoutsAuth title={title} button={<ButtonCreate link={'/category/create'} name={'Create Category'} />}>
                 <Cards>
-                        <SearchInput search={search} setSearch={setSearch} />
-                        <CustomDataTable
-                            columns={columns}
-                            data={data}
-                            totalRows={totalRows}
-                            handlePageChange={handlePageChange}
-                            handlePerPageChange={handlePerPageChange}
-                            handleSort={handleSort}
-                            loading={loading}
-                            defaultSortFieldId={sortColumn+1}
-                            defaultSortAsc={sortOrder === 'asc' ? true : false}
-                        />   
+                    <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
+                    <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>
                 </Cards>
             </LayoutsAuth>
         </>

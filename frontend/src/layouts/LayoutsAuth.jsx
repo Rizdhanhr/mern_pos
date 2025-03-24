@@ -9,7 +9,8 @@ export default function LayoutsAuth({children,title,button}){
         <>
             <Provider store={store}>
             <div className="page">
-                <Navbar/>
+                    <Navbar/>
+                    
                 <div className="page-wrapper">
                     <PageHeader button={button} title={title}/>
                         <div className="page-body">
