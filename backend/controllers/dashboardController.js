@@ -1,11 +1,7 @@
-function index (req, res){
-    const user = res.locals.currentUser;
-   
-    // console.log(user);
-    res.render('dashboard/index',{title : "Dashboard"});
-    // res.render('layouts/main',{title:"Hello World"});
+class DashboardController {
+  static index(req, res, next) {
+    res.status(200).message({ success: true, message: "This Data" });
+  }
 }
 
-module.exports = {
-    index
-}
+module.exports = DashboardController;

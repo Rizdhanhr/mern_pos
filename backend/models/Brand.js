@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const applyFindOrFail = require("../helper/findOrFailHelper");
-const logger = require("../config/logger");
+const applyFindOrFail = require("../helpers/findOrFailHelper");
+const Product = require("./Product");
 
 const Brand = sequelize.define(
   "Brand",
@@ -44,5 +44,12 @@ const Brand = sequelize.define(
 );
 
 applyFindOrFail(Brand);
+
+setImmediate(() => {
+  Brand.hasMany(sequelize.models.Product, {
+    foreignKey: "brand_id",
+    as: "product"
+  });
+});
 
 module.exports = Brand;

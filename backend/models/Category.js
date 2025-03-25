@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize"); // Import DataTypes
 const sequelize = require("../config/db");
-const applyFindOrFail = require("../helper/findOrFailHelper");
+const applyFindOrFail = require("../helpers/findOrFailHelper");
+const Product = require("./Product");
 
 const Category = sequelize.define(
   "Category",
@@ -41,4 +42,6 @@ const Category = sequelize.define(
 );
 
 applyFindOrFail(Category);
+// Category.hasMany(Product, { foreignKey: "category_id", as: "product" });
+
 module.exports = Category;

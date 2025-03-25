@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const validationHandler = (req, res, next) => {
+const validationMiddleware = (req, res, next) => {
   const errors = validationResult(req).array({ onlyFirstError: true });
   if (req.validationErrors) {
     errors.push(...req.validationErrors);
@@ -18,6 +18,4 @@ const validationHandler = (req, res, next) => {
   next();
 };
 
-module.exports = {
-  validationHandler
-};
+module.exports = validationMiddleware;

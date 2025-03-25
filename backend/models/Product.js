@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const applyFindOrFail = require("../helper/findOrFailHelper");
-const logger = require("../config/logger");
+const applyFindOrFail = require("../helpers/findOrFailHelper");
+const Brand = require("./Brand");
 
 const Product = sequelize.define(
   "Product",
@@ -14,7 +14,15 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    brand_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     price_sell: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    price_buy: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -60,5 +68,13 @@ const Product = sequelize.define(
 );
 
 applyFindOrFail(Product);
+setImmediate(() => {
+  Product.belongsTo(sequelize.models.Brand, {
+    foreignKey: "brand_id",
+    as: "brand"
+  });
+});
+
+// Product.belongsTo(Category, { foreignKey: "category_id", as: "category" });
 
 module.exports = Product;

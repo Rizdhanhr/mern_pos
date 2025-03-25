@@ -24,19 +24,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, uploadDir);
-//   },
-//   filename: (req, file, cb) => {
-//     const customFileName = `${Date.now()}-${file.originalname.replace(
-//       /\s+/g,
-//       "_"
-//     )}`;
-//     cb(null, customFileName);
-//   }
-// });
-
 const storage = multer.memoryStorage();
 
 const upload = multer({

@@ -3,11 +3,12 @@ import LayoutsAuth from "../../layouts/LayoutsAuth";
 import { Helmet } from "react-helmet-async";
 import { Cards } from "../../components/card/Card";
 import LoadingOverlay from "../../components/loading/LoadingOverlay";
-import {  InputNumber, Select, Upload } from "antd";
+import {  InputNumber, Select, Upload, Image, Modal } from "antd";
 import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link } from "react-router-dom";
 import CategoryService from "../../services/categoryService";
+import BrandService from "../../services/brandService";
 import ImgCrop from 'antd-img-crop';
 import ProductService from "../../services/productService";
 
@@ -16,31 +17,49 @@ export default function ProductCreate(){
     const title = "Create Product";
     const [form, setForm] = useState({
         name: "",
-        price: 0,
+        priceSell: 0,
+        priceBuy : 0,
         category: null,
+        brand: null,
         status : true
     });
 
     const [category, setCategory] = useState([]);
+    const [brand, setBrand] = useState([]);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const [fileList, setFileList] = useState([]);
+    const [previewImage, setPreviewImage] = useState("");
+    const [previewOpen, setPreviewOpen] = useState(false);
     
     useEffect(() => {
-        getCategory();
+        getSelectData();
     }, []);
 
-    async function getCategory() {
+    async function getSelectData() {
         try {
-            const response = await CategoryService.getAll();
-            setCategory(response.data.data);
+            const [resCategory, resBrand] = await Promise.all([
+                CategoryService.getAll(),
+                BrandService.getAll()
+            ]);
+            setCategory(resCategory.data.data);
+            setBrand(resBrand.data.data);
         } catch (error) {
             console.log(error);
         }
     }
 
-    const optionCategory = () => category.map(ct => ({
+    const optionCategory = () => category
+        .sort((a, b) => a.name.localeCompare(b.name)) 
+        .map(ct => ({
+        value: ct.id,
+        label: ct.name
+    }));
+
+    const optionBrand = () => brand
+        .sort((a, b) => a.name.localeCompare(b.name)) 
+        .map(ct => ({
         value: ct.id,
         label: ct.name
     }));
@@ -68,16 +87,16 @@ export default function ProductCreate(){
   
 
     const onPreview = async (file) => {
-        // const src = file.url || (await getSrcFromFile(file));
-        // const imgWindow = window.open(src);
-
-        // if (imgWindow) {
-        // const image = new Image();
-        // image.src = src;
-        // imgWindow.document.write(image.outerHTML);
-        // } else {
-        // window.location.href = src;
-        // }
+        let src = file.url;
+        if (!src) {
+        src = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file.originFileObj);
+            reader.onload = () => resolve(reader.result);
+        });
+        }
+        setPreviewImage(src);
+        setPreviewOpen(true);
     };
 
     
@@ -88,7 +107,9 @@ export default function ProductCreate(){
         try {
             const formData = new FormData();  
             formData.append("name", form.name);
-            formData.append("price", form.price);
+            formData.append("priceSell", form.priceSell);
+            formData.append("priceBuy", form.priceBuy);
+            formData.append("brand", form.brand);
             formData.append("category", form.category);
             formData.append("status", form.status);
             if (fileList && fileList.length > 0) {
@@ -98,7 +119,6 @@ export default function ProductCreate(){
             alertSuccess(response.data.message);
             navigate('/product');
         } catch (error) {
-            console.log(error);
             if (error.status === 422) {
                 const parsedErrors = errorValidation(error.response);
                 setErrors(parsedErrors);
@@ -139,16 +159,51 @@ export default function ProductCreate(){
                              {errors.category && <span style={{ color: "red" }}>{errors.category}</span>}
                         </div>
                         <div className="col-md-6 mb-3">
-                            <label className="form-label">Price <span style={{ color:'red' }}>*</span></label>
-                            <InputNumber
-                                status={errors.price && 'error'}
+                            <label className="form-label">Brand <span style={{ color:'red' }}>*</span></label>
+                            <Select
+                                status={errors.brand && 'error'}
+                                showSearch
+                                placeholder="Select Brand"
+                                optionFilterProp="label"
                                 style={{ width: '100%' }}
-                                value={form.price} // Use value to control the InputNumber
+                                value={form.brand}
+                                options={optionBrand()}
+                                onChange={(e) => setForm(prev => ({ ...prev, brand: e }))}
+                            />
+                             {errors.brand && <span style={{ color: "red" }}>{errors.brand}</span>}
+                        </div>
+                         <div className="col-md-5 mb-3">
+                            <label className="form-label">Price Buy <span style={{ color:'red' }}>*</span></label>
+                            <InputNumber
+                                status={errors.priceBuy && 'error'}
+                                min={0}
+                                style={{ width: '100%' }}
+                                value={form.priceBuy} // Use value to control the InputNumber
                                 formatter={(value) => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 parser={(value) => value?.replace(/\Rp.\s?|(,*)/g, '')}
-                                onChange={(e) => setForm((prevForm) => ({...prevForm, price : e}))}
+                                onChange={(e) => setForm((prevForm) => ({...prevForm, priceBuy : e}))}
                             />
-                             {errors.price && <span style={{ color: "red" }}>{errors.price}</span>}
+                             {errors.priceBuy && <span style={{ color: "red" }}>{errors.priceBuy}</span>}
+                        </div>
+                        <div className="col-md-5 mb-3">
+                            <label className="form-label">Price Sell <span style={{ color:'red' }}>*</span></label>
+                            <InputNumber
+                                min={0}
+                                status={errors.priceSell && 'error'}
+                                style={{ width: '100%' }}
+                                value={form.priceSell} // Use value to control the InputNumber
+                                formatter={(value) => `Rp. ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                parser={(value) => value?.replace(/\Rp.\s?|(,*)/g, '')}
+                                onChange={(e) => setForm((prevForm) => ({...prevForm, priceSell : e}))}
+                            />
+                             {errors.priceSell && <span style={{ color: "red" }}>{errors.priceSell}</span>}
+                        </div>
+                         <div className="col-md-2 mb-3">
+                            <label className="form-label">Status</label>
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled" checked={form.status}  onChange={(e) => setForm({ ...form, status: e.target.checked })}/>
+                                <label className="form-check-label" htmlFor="flexSwitchCheckDisabled">Active</label>
+                            </div>
                         </div>
                         <div className="col-md-3 mb-3">  
                             <label htmlFor="formFile" className="form-label">Images (PNG/JPG/JPEG) <span style={{ color:'red' }}>*</span></label>
@@ -167,14 +222,20 @@ export default function ProductCreate(){
                                 </Upload>
                             </ImgCrop> 
                              {errors.image && <span style={{ color: "red" }}>{errors.image}</span>}    
+                        
+                             {previewImage && (
+                                <Image
+                                wrapperStyle={{ display: 'none' }}
+                                preview={{
+                                    visible: previewOpen,
+                                    onVisibleChange: visible => setPreviewOpen(visible),
+                                    afterOpenChange: visible => !visible && setPreviewImage(''),
+                                }}
+                                src={previewImage}
+                                />
+                            )}
                         </div>
-                        <div className="col-md-4 mb-3">
-                            <label className="form-label">Status</label>
-                            <div className="form-check form-switch">
-                                <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDisabled" checked={form.status}  onChange={(e) => setForm({ ...form, status: e.target.checked })}/>
-                                <label className="form-check-label" htmlFor="flexSwitchCheckDisabled">Active</label>
-                            </div>
-                        </div>
+                       
                     </div>
                 </Cards>
                 <div className="row mt-3">

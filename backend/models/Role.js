@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const applyFindOrFail = require("../helper/findOrFailHelper");
+const applyFindOrFail = require("../helpers/findOrFailHelper");
 
 const Role = sequelize.define(
   "Role",

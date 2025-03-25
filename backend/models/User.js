@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize"); // Import DataTypes
 const sequelize = require("../config/db");
-const applyFindOrFail = require("../helper/findOrFailHelper");
+const applyFindOrFail = require("../helpers/findOrFailHelper");
 const Role = require("./Role");
 
 const User = sequelize.define(

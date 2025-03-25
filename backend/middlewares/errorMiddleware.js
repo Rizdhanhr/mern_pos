@@ -1,5 +1,5 @@
 const logger = require("../config/logger");
-const errorHandler = (err, req, res, next) => {
+const errorMiddleware = (err, req, res, next) => {
   logger.error(`Error: ${err.message}, Stack: ${err.stack}`);
   const statusCode = err.status || 500;
   const env = process.env.NODE_ENV || "development";
@@ -15,4 +15,4 @@ const errorHandler = (err, req, res, next) => {
   return res.status(statusCode).json(errorResponse);
 };
 
-module.exports = errorHandler;
+module.exports = errorMiddleware;
