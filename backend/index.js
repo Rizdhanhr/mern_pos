@@ -28,7 +28,10 @@ app.use(
   })
 );
 
-app.use("/uploads", express.static(path.join(__dirname, "public/product")));
+app.use(
+  "/uploads/product",
+  express.static(path.join(__dirname, "public/product"))
+);
 //Routing Authentication
 app.use("/api/auth", authRouter);
 //Routing Admin

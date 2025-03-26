@@ -6,6 +6,7 @@ class ProductValidator {
       body("name")
         .notEmpty()
         .withMessage("The name field is required.")
+        .trim()
         .isLength({ min: 2, max: 255 }),
       body("priceSell")
         .notEmpty()
@@ -13,7 +14,7 @@ class ProductValidator {
         .isInt({ min: 10 })
         .withMessage("The price sell must be greater than 0.")
         .custom((value, { req }) => {
-          if (value <= req.body.priceBuy) {
+          if (parseInt(value) <= parseInt(req.body.priceBuy)) {
             throw new Error("The price sell must be greater than price buy.");
           }
           return true;

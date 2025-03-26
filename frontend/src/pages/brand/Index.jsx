@@ -91,7 +91,7 @@ export default function BrandIndex(){
                     items={items}
                 />
             },
-            width: 40
+            width: 100
         },
     ];
     

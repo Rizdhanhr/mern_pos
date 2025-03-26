@@ -22,7 +22,6 @@ export default function LoginIndex() {
     setIsLoading(true);
     try {
       e.preventDefault();
-     
       const response = await AuthService.loginStore(form); 
       setToken(response.data.token);
       navigate("/");

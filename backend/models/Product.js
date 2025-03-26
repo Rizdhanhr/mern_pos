@@ -1,49 +1,48 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../config/db");
 const applyFindOrFail = require("../helpers/findOrFailHelper");
-const Brand = require("./Brand");
 
-const Product = sequelize.define(
-  "Product",
+
+class Product extends Model {}
+Product.init(
   {
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     category_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     brand_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     price_sell: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     price_buy: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     images: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     created_by: {
-      type: DataTypes.INTEGER
-      // allowNull: false
+      type: DataTypes.INTEGER,
     },
     updated_by: {
-      type: DataTypes.INTEGER
-      // allowNull: false
+      type: DataTypes.INTEGER,
     },
     status: {
-      type: DataTypes.INTEGER
-      // allowNull: false
-    }
+      type: DataTypes.INTEGER,
+    },
   },
   {
+    sequelize,
+    modelName: "Product",
     tableName: "product",
     timestamps: true,
     underscored: true,
@@ -51,27 +50,32 @@ const Product = sequelize.define(
     updatedAt: "updated_at",
     hooks: {
       beforeCreate: async (product, options) => {
-        const userId = options.user.id; // Ambil userId dari options
+        const userId = options.user?.id;
         if (userId) {
           product.created_by = userId;
-          product.updated_by = userId; // Asumsi updated_by sama dengan created_by saat pembuatan
+          product.updated_by = userId;
         }
       },
       beforeUpdate: async (product, options) => {
-        const userId = options.user.id; // Ambil userId dari options
+        const userId = options.user?.id;
         if (userId) {
-          product.updated_by = userId; // Asumsi updated_by sama dengan created_by saat pembuatan
+          product.updated_by = userId;
         }
-      }
-    }
+      },
+    },
   }
 );
 
 applyFindOrFail(Product);
+
 setImmediate(() => {
   Product.belongsTo(sequelize.models.Brand, {
     foreignKey: "brand_id",
     as: "brand"
+  });
+   Product.belongsTo(sequelize.models.Category, {
+    foreignKey: "category_id",
+    as: "category"
   });
 });
 

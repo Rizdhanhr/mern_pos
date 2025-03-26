@@ -27,6 +27,9 @@ class ProductService {
       }
     });
   }
+  static getById(id) {
+    return axiosInstance.get(`/product/${id}`);
+  }
 }
 
 export default ProductService;

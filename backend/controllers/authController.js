@@ -8,20 +8,15 @@ class AuthController {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ where: { email } });
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: "These credentials doesn't match our records."
-        });
-      }
+      const failedResponse = {
+        success: false,
+        message: "These credentials doesn't match our records."
+      };
+
+      if (!user) return res.status(404).json(failedResponse);
 
       const isValidPassword = await bcrypt.compare(password, user.password);
-      if (!isValidPassword) {
-        return res.status(404).json({
-          success: false,
-          message: "These credentials doesn't match our records."
-        });
-      }
+      if (!isValidPassword) return res.status(404).json(failedResponse);
 
       const payload = {
         id: user.id,

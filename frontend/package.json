@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.6.1",
     "antd": "^5.24.3",
     "antd-img-crop": "^4.24.0",
+    "antd-style": "^3.7.1",
     "axios": "^1.7.7",
     "bootstrap-icons": "^1.11.3",
     "dotenv": "^16.4.7",

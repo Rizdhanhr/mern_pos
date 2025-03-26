@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd";
 
-export default function CustomDatatable({ dataSource, columns, loading, tableState, setTableState, total }) {
+export default function CustomDatatable({ dataSource, columns, loading, tableState, setTableState, total }) {  
   const paginationProps = {
     current: tableState.page,
     pageSize: tableState.perPage,
@@ -33,7 +33,7 @@ export default function CustomDatatable({ dataSource, columns, loading, tableSta
           pagination={paginationProps}
           loading={loading}
           rowKey="id"
-          scroll={{ x: 'max-content', y:'auto' }}
+          scroll={{ x: 'max-content'}}
       />
     </>
   )

@@ -1,9 +1,9 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../config/db");
 const applyFindOrFail = require("../helpers/findOrFailHelper");
 
-const Role = sequelize.define(
-  "Role",
+class Role extends Model {}
+Role.init(
   {
     name: {
       type: DataTypes.STRING,
@@ -11,6 +11,8 @@ const Role = sequelize.define(
     }
   },
   {
+    sequelize,
+    modelName: "Role",
     tableName: "role",
     timestamps: true,
     underscored: true,

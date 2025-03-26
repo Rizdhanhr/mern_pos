@@ -59,14 +59,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response, 
   async (error) => {
-    console.log(error);
+    
     if (error.response) {
       const status = error.response.status;
       const originalRequest = error.config;
       if (status === 401) {
         return await handleRefreshToken(originalRequest);
       }
-      
       // else if (status >= 500) {
       //   window.location.href = "/500"; 
       // } else if (status === 403) {

@@ -1,9 +1,14 @@
-import { Helmet } from "react-helmet-async";
-import { Cards } from "../../components/card/Card";
+import { React, useState, useEffect } from "react";
 import LayoutsAuth from "../../layouts/LayoutsAuth";
 import ButtonCreate from "../../components/button/ButtonCreate";
-import { useState, useEffect } from "react";
-import ProductService from "../../services/productService";
+import { Helmet } from "react-helmet-async";
+import { Cards } from "../../components/card/Card";
+import ProductService from "../../services/productService"; 
+import SearchInput from "../../components/input/SearchInput";
+import ButtonDropdown from "../../components/button/ButtonDropdown";
+import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
+import CustomDatatable from "../../components/table/CustomDatatable";
+import { Image } from "antd";
 
 export default function ProductIndex() {
     const title = "Product";
@@ -11,15 +16,16 @@ export default function ProductIndex() {
     const [tableState, setTableState] = useState({
             page: 1,
             perPage: 10,
-            sortColumn: 1,
-            sortOrder: 'descend',
+            sortColumn: 0,
+            sortOrder: 'ascend',
     });
     const [search, setSearch] = useState("");
     const [total, setTotal] = useState("");
     const [loading, setLoading] = useState(false);
 
+
     useEffect(() => {
-            getData();
+        getData();
     }, [tableState, search]);
 
     async function getData() {
@@ -33,6 +39,7 @@ export default function ProductIndex() {
                 sortColumn,
                 sortOrder
             );
+            
             setData(response.data.data);
             setTotal(response.data.total);
         } catch (error) {
@@ -42,6 +49,100 @@ export default function ProductIndex() {
         }
     }
 
+    async function deleteData(id) {
+       
+    }
+
+
+    const columns = [
+        {
+            title: "Name",
+            dataIndex: "name",
+            key: "name",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 0 && tableState.sortOrder,
+            columnKey: 0,
+            width: 300,
+            fixed:"left"
+        },
+        {
+            title: "Brand",
+            dataIndex: ["brand","name"],
+            key: "brand.name",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 1 && tableState.sortOrder,
+            columnKey: 1,
+            width: 300
+        }, 
+        {
+            title: "Category",
+            dataIndex: ["category","name"],
+            key: "category.name",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 2 && tableState.sortOrder,
+            columnKey: 2,
+            width: 300
+                
+        },
+        {
+            title: "Price Buy",
+            dataIndex: "price_buy",
+            key: "price_buy",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 3 && tableState.sortOrder,
+            columnKey: 3,
+            render: (text, record) => {
+                return 'Rp. '+text.toLocaleString();
+            },
+            width: 300
+        },
+        {
+            title: "Price Sell",
+            dataIndex: "price_sell",
+            key: "price_sell",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 4 && tableState.sortOrder,
+            columnKey: 3,
+            render: (text, record) => {
+                return 'Rp. '+text.toLocaleString();
+            },
+            width: 300
+        },
+        {
+            title: "Images",
+            dataIndex: "images",
+            key: "images",
+            render: (text, record) => {
+                return <Image
+                    width={80}
+                    src={import.meta.env.VITE_IMAGE_URL + "/product/"+text}
+                />
+            },
+            width: 100,
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            render: (text, record) => {
+                let items = [];
+                items.push({ label: "Edit", type: "link", link: `/product/${record.id}/edit`});
+                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
+                return <ButtonDropdown
+                    title="Options"
+                    items={items}
+                />
+            },
+            width: 40,
+            fixed:"right"
+        },
+        
+    ];
+
     return (
         <>
             <Helmet>
@@ -49,7 +150,8 @@ export default function ProductIndex() {
             </Helmet>
             <LayoutsAuth title={title} button={<ButtonCreate link={'/product/create'} name={'Create Product'} />}>
                 <Cards>
-                   
+                     <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
+                    <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>
                 </Cards>
             </LayoutsAuth>
         </>

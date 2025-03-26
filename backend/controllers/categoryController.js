@@ -99,15 +99,12 @@ class CategoryController {
   static async show(req, res, next) {
     try {
       const id = req.params.id;
-      const category = await Category.findOne({
-        where: { id: id }
-      });
-
-      if (!category) {
-        const error = new Error("Data not found");
-        error.status = 404;
-        throw error;
-      }
+      const category = await Category.findOrFail(
+        {
+          where: { id: id }
+        },
+        res
+      );
 
       const data = {
         id: category.id,
@@ -125,15 +122,12 @@ class CategoryController {
   static async update(req, res, next) {
     try {
       const id = req.params.id;
-      const category = await Category.findOne({
-        where: { id: id }
-      });
-
-      if (!category) {
-        const error = new Error("Data not found");
-        error.status = 404;
-        throw error;
-      }
+      const category = await Category.findOrFail(
+        {
+          where: { id: id }
+        },
+        res
+      );
 
       category.name = req.body.name;
       await category.save({ user: req.user });
@@ -147,14 +141,13 @@ class CategoryController {
   static async delete(req, res, next) {
     try {
       const id = req.params.id;
-      const category = await Category.findOne({
-        where: { id: id }
-      });
-      if (!category) {
-        const error = new Error("Data not found");
-        error.status = 404;
-        throw error;
-      }
+      const category = await Category.findOrFail(
+        {
+          where: { id: id }
+        },
+        res
+      );
+
       await category.destroy();
       return res.status(200).json({ success: true, message: "Data Deleted" });
     } catch (error) {

@@ -34,10 +34,10 @@ export default function ProductCreate(){
     const [previewOpen, setPreviewOpen] = useState(false);
     
     useEffect(() => {
-        getSelectData();
+        getData();
     }, []);
 
-    async function getSelectData() {
+    async function getData() {
         try {
             const [resCategory, resBrand] = await Promise.all([
                 CategoryService.getAll(),
@@ -105,6 +105,7 @@ export default function ProductCreate(){
         setIsLoading(true);
         setErrors({});
         try {
+            console.log(form);
             const formData = new FormData();  
             formData.append("name", form.name);
             formData.append("priceSell", form.priceSell);
@@ -207,7 +208,7 @@ export default function ProductCreate(){
                         </div>
                         <div className="col-md-3 mb-3">  
                             <label htmlFor="formFile" className="form-label">Images (PNG/JPG/JPEG) <span style={{ color:'red' }}>*</span></label>
-                             <ImgCrop showGrid rotationSlider aspectSlider showReset>
+                            <ImgCrop aspect={686 / 416} modalWidth={686} showGrid rotationSlider  showReset>
                                 <Upload
                                  accept=".png,.jpg,.jpeg"
                                     // customRequest={customRequest}
@@ -222,7 +223,6 @@ export default function ProductCreate(){
                                 </Upload>
                             </ImgCrop> 
                              {errors.image && <span style={{ color: "red" }}>{errors.image}</span>}    
-                        
                              {previewImage && (
                                 <Image
                                 wrapperStyle={{ display: 'none' }}

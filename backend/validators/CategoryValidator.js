@@ -6,6 +6,7 @@ class CategoryValidator {
       body("name")
         .notEmpty()
         .withMessage("The name field is required.")
+        .trim()
         .isLength({ min: 2, max: 255 })
     ];
   }
@@ -14,6 +15,7 @@ class CategoryValidator {
       body("name")
         .notEmpty()
         .withMessage("The name field is required.")
+        .trim()
         .isLength({ min: 2, max: 255 })
     ];
   }

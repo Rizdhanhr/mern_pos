@@ -1,10 +1,10 @@
-const { DataTypes } = require("sequelize"); // Import DataTypes
+const { DataTypes, Model } = require("sequelize"); // Import DataTypes
 const sequelize = require("../config/db");
 const applyFindOrFail = require("../helpers/findOrFailHelper");
 const Product = require("./Product");
 
-const Category = sequelize.define(
-  "Category",
+class Category extends Model {}
+Category.init(
   {
     name: {
       type: DataTypes.STRING,
@@ -18,6 +18,8 @@ const Category = sequelize.define(
     }
   },
   {
+    sequelize,
+    modelName: "Category",
     tableName: "category",
     timestamps: true,
     underscored: true,
@@ -43,5 +45,11 @@ const Category = sequelize.define(
 
 applyFindOrFail(Category);
 // Category.hasMany(Product, { foreignKey: "category_id", as: "product" });
+setImmediate(() => {
+  Category.hasMany(sequelize.models.Product, {
+    foreignKey: "category_id",
+    as: "product"
+  });
+});
 
 module.exports = Category;
