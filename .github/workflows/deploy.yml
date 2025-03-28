@@ -1,0 +1,36 @@
+name: Deploy To VPS
+
+on:
+  push:
+    branches:
+      - master  # Jalankan saat push ke branch "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy ke VPS
+        run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd /var/www/pos_frontend
+            git pull origin main
+            npm install
+            npm run build
+            mv dist/* /var/www/html/
+            
+            cd /var/www/pos_backend
+            git pull origin main
+            npm install
+            pm2 restart all
+          EOF
