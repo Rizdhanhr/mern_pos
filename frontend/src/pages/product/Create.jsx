@@ -38,6 +38,7 @@ export default function ProductCreate(){
     }, []);
 
     async function getData() {
+        setIsLoading(true);
         try {
             const [resCategory, resBrand] = await Promise.all([
                 CategoryService.getAll(),
@@ -47,6 +48,8 @@ export default function ProductCreate(){
             setBrand(resBrand.data.data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -105,7 +108,6 @@ export default function ProductCreate(){
         setIsLoading(true);
         setErrors({});
         try {
-            console.log(form);
             const formData = new FormData();  
             formData.append("name", form.name);
             formData.append("priceSell", form.priceSell);
@@ -142,7 +144,7 @@ export default function ProductCreate(){
                     <div className="row">
                         <div className="col-md-12 mb-3">
                             <label className="form-label">Name <span style={{ color:'red' }}>*</span></label>
-                            <input onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
+                            <input value={form.name} onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
                             {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
                         </div>
                         <div className="col-md-6 mb-3">

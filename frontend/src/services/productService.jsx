@@ -30,6 +30,10 @@ class ProductService {
   static getById(id) {
     return axiosInstance.get(`/product/${id}`);
   }
+
+  static update(id, data) {
+    return axiosInstance.put(`/product/${id}`, data);
+  }
 }
 
 export default ProductService;

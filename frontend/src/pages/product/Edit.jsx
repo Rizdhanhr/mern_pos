@@ -16,13 +16,13 @@ import ProductService from "../../services/productService";
 export default function ProductEdit(){
     const title = "Edit Product";
     const { id } = useParams();
-    const [form, setForm] = useState({
-        name: "",
-        priceSell: 0,
-        priceBuy : 0,
-        category: null,
-        brand: null,
-        status : true
+     const [form, setForm] = useState({
+           name: "",
+           priceSell: 0,
+           priceBuy : 0,
+           category: null,
+           brand: null,
+           status : true
     });
 
     const [category, setCategory] = useState([]);
@@ -39,17 +39,29 @@ export default function ProductEdit(){
     }, []);
 
     async function getData() {
+        setIsLoading(true);
         try {
             const [resCategory, resBrand, resData] = await Promise.all([
                 CategoryService.getAll(),
                 BrandService.getAll(),
                 ProductService.getById(id)
             ]);
-            console.log(resData.data.data);
+            const editData = resData.data.data;
+            console.log(editData);
+            setForm({
+                name: editData.name,
+                priceSell: editData.price_sell,
+                priceBuy : editData.price_buy,
+                category: editData.category_id,
+                brand: editData.brand_id,
+                status : editData.status? true : false
+            });
             setCategory(resCategory.data.data);
             setBrand(resBrand.data.data);
         } catch (error) {
             console.log(error);
+        }finally{
+            setIsLoading(false);
         }
     }
 
@@ -105,7 +117,32 @@ export default function ProductEdit(){
     
 
     async function formSubmit() {
-       
+      
+        // setIsLoading(true);
+        // setErrors({});
+        
+        // try {
+        //     const formData = new FormData();  
+        //     formData.append("name", form.name);
+        //     formData.append("priceSell", form.priceSell);
+        //     formData.append("priceBuy", form.priceBuy);
+        //     formData.append("brand", form.brand);
+        //     formData.append("category", form.category);
+        //     formData.append("status", form.status);
+        //     if (fileList && fileList.length > 0) {
+        //         formData.append("image", fileList[0].originFileObj);
+        //     };
+        //     // const response = await ProductService.create(formData);
+        //     // alertSuccess(response.data.message);
+        //     // navigate('/product');
+        // } catch (error) {
+        //     if (error.status === 422) {
+        //         const parsedErrors = errorValidation(error.response);
+        //         setErrors(parsedErrors);
+        //     }                        
+        // } finally {
+        //     setIsLoading(false);
+        // }
     }   
 
    
@@ -121,7 +158,7 @@ export default function ProductEdit(){
                     <div className="row">
                         <div className="col-md-12 mb-3">
                             <label className="form-label">Name <span style={{ color:'red' }}>*</span></label>
-                            <input onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
+                            <input value={form.name} onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
                             {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
                         </div>
                         <div className="col-md-6 mb-3">
@@ -137,7 +174,7 @@ export default function ProductEdit(){
                                 onChange={(e) => setForm(prev => ({ ...prev, category: e }))}
                             />
                              {errors.category && <span style={{ color: "red" }}>{errors.category}</span>}
-                        </div>
+                        </div>  
                         <div className="col-md-6 mb-3">
                             <label className="form-label">Brand <span style={{ color:'red' }}>*</span></label>
                             <Select
