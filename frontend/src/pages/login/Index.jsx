@@ -49,7 +49,7 @@ export default function LoginIndex() {
           </div>
           <div className="card card-md">
             <div className="card-body">
-              <h2 className="h2 text-center mb-4">Login to your account</h2>
+              <h2 className="h2 text-center mb-4">Login to your account cok</h2>
               <form onSubmit={formSubmit}  method="POST" >
                 <div className="mb-3">
                   <label className="form-label">Email address</label>
