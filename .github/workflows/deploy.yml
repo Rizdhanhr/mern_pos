@@ -23,16 +23,23 @@ jobs:
             cd /var/www/mern_pos
             git pull origin master
 
-      - name: Build Prod Frontend (ReactJS Vite)
+      - name: Build Frontend (ReactJS Vite) & Build Backend (ExpressJS)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
+            # Build Frontend
             cd /var/www/mern_pos/frontend
             npm install
             npm run build
+            # Build Backend
+            cd ../backend
+            npm install
+            pm2 restart pos_api || pm2 start index.js --name "pos_api"
+            pm2 save
+           
 
 
             

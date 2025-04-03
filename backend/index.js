@@ -33,6 +33,9 @@ app.use(
   express.static(path.join(__dirname, "public/product"))
 );
 //Routing Authentication
+app.get("/v1/testing", (req, res) => {
+  res.status(200).json({ message: "Jalan Cuy" });
+});
 app.use("/v1/auth", authRouter);
 //Routing Admin
 app.use("/v1/dashboard", isAuth, dashboardRouter);
