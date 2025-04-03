@@ -46,4 +46,4 @@ app.use("/v1/product", productRouter);
 
 app.use(errorMiddleware);
 
-app.listen(PORT, () => console.log("started!"));
+app.listen(PORT, "0.0.0.0", () => console.log("started!"));
