@@ -33,13 +33,13 @@ app.use(
   express.static(path.join(__dirname, "public/product"))
 );
 //Routing Authentication
-app.use("/api/auth", authRouter);
+app.use("/v1/auth", authRouter);
 //Routing Admin
-app.use("/api/dashboard", isAuth, dashboardRouter);
-app.use("/api/user", isAuth, userRouter);
-app.use("/api/brand", isAuth, brandRouter);
-app.use("/api/category", isAuth, categoryRouter);
-app.use("/api/product", productRouter);
+app.use("/v1/dashboard", isAuth, dashboardRouter);
+app.use("/v1/user", isAuth, userRouter);
+app.use("/v1/brand", isAuth, brandRouter);
+app.use("/v1/category", isAuth, categoryRouter);
+app.use("/v1/product", productRouter);
 
 app.use(errorMiddleware);
 
