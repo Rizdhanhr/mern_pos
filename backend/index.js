@@ -34,7 +34,7 @@ app.use(
 );
 //Routing Authentication
 app.get("/v1/testing", (req, res) => {
-  res.status(200).json({ message: "Jalan Cuy" });
+  res.status(200).json({ message: "Jalan Cuyyku" });
 });
 app.use("/v1/auth", authRouter);
 //Routing Admin
