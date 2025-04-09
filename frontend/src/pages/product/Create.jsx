@@ -44,6 +44,7 @@ export default function ProductCreate(){
                 CategoryService.getAll(),
                 BrandService.getAll()
             ]);
+            console.log(resBrand.data.data);
             setCategory(resCategory.data.data);
             setBrand(resBrand.data.data);
         } catch (error) {

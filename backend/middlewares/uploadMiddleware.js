@@ -35,7 +35,6 @@ const upload = multer({
 const validateImage = (req, res, next) => {
   upload(req, res, err => {
     req.validationErrors = req.validationErrors || [];
-
     if (err) {
       req.validationErrors.push({
         type: "field",
@@ -60,4 +59,26 @@ const validateImage = (req, res, next) => {
   });
 };
 
-module.exports = { upload, validateImage };
+const validateImageEdit = (req, res, next) => {
+  upload(req, res, err => {
+    req.validationErrors = req.validationErrors || [];
+
+    if (err) {
+      req.validationErrors.push({
+        type: "field",
+        msg: err.message,
+        path: "image",
+        location: "body"
+      });
+    }
+
+    // Gak perlu cek `!req.file`, karena opsional
+    if (req.file) {
+      req.savedImage = req.file.filename;
+    }
+
+    next();
+  });
+};
+
+module.exports = { upload, validateImage, validateImageEdit };

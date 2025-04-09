@@ -108,14 +108,14 @@ axiosInstance.interceptors.response.use(
           isRefresh = false; 
         }    
       } else if (status >= 500) {
-        navigateHelper.navigate("/500");
+        navigateHelper.navigate("/error/500");
       } else if (status === 403) {
-        navigateHelper.navigate("/403");
+        navigateHelper.navigate("/error/403");
       } else if (status === 404) {
-        navigateHelper.navigate("/404");
+        navigateHelper.navigate("/error/404");
       }
     } else {
-      navigateHelper.navigate("/500");
+      navigateHelper.navigate("/error/500");
     }
     return Promise.reject(error);
   }

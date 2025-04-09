@@ -25,10 +25,10 @@ class AuthController {
       };
 
       const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1m"
+        expiresIn: "15m"
       });
       const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-        expiresIn: "2m"
+        expiresIn: "1d"
       });
 
       // res.cookie("refreshToken", refreshToken, {
@@ -79,7 +79,7 @@ class AuthController {
             payload,
             process.env.ACCESS_TOKEN_SECRET,
             {
-              expiresIn: "15s"
+              expiresIn: "15m"
             }
           );
 

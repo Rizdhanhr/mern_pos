@@ -1,22 +1,17 @@
 const Brand = require("../models/Brand.js");
-const { formatDate } = require("../helpers/dateHelper.js");
-const logger = require("../config/logger.js");
 const { Op } = require("sequelize");
+const BrandResource = require("../resources/BrandResource.js");
 
 class BrandController {
   static async index(req, res, next) {
     try {
       const brand = await Brand.findAll();
-      const result = brand.map(br => {
-        return {
-          id: br.id,
-          name: br.name,
-          created_at: formatDate(br.created_at),
-          updated_at: formatDate(br.updated_at)
-        };
-      });
+      const response = {
+        success: true,
+        data: BrandResource.collection(brand)
+      };
 
-      return res.status(200).json({ success: true, data: result });
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -70,16 +65,13 @@ class BrandController {
         offset: (page - 1) * perPage
       });
 
-      const result = brands.map(br => ({
-        id: br.id,
-        name: br.name,
-        created_at: formatDate(br.created_at),
-        updated_at: formatDate(br.updated_at)
-      }));
+      const response = {
+        success: true,
+        data: BrandResource.collection(brands),
+        total: totalBrands
+      };
 
-      return res
-        .status(200)
-        .json({ success: true, data: result, total: totalBrands });
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -103,14 +95,13 @@ class BrandController {
         },
         res
       );
-      const data = {
-        id: brand.id,
-        name: brand.name,
-        created_at: formatDate(brand.created_at),
-        updated_at: formatDate(brand.updated_at)
+
+      const response = {
+        success: true,
+        data: new BrandResource(brand).toJSON()
       };
 
-      return res.status(200).json({ succes: true, data: data });
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }

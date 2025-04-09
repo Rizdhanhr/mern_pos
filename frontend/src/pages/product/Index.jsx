@@ -8,16 +8,16 @@ import SearchInput from "../../components/input/SearchInput";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
-import { Image } from "antd";
+import { Image, Tag } from "antd";
 
 export default function ProductIndex() {
     const title = "Product";
     const [data, setData] = useState([]);
     const [tableState, setTableState] = useState({
-            page: 1,
-            perPage: 10,
-            sortColumn: 0,
-            sortOrder: 'ascend',
+        page: 1,
+        perPage: 10,
+        sortColumn: 5,
+        sortOrder: 'descend',
     });
     const [search, setSearch] = useState("");
     const [total, setTotal] = useState("");
@@ -39,7 +39,6 @@ export default function ProductIndex() {
                 sortColumn,
                 sortOrder
             );
-            
             setData(response.data.data);
             setTotal(response.data.total);
         } catch (error) {
@@ -50,7 +49,16 @@ export default function ProductIndex() {
     }
 
     async function deleteData(id) {
-       
+       try {
+            setLoading(true);
+            const response = await ProductService.delete(id);
+            alertSuccess(response.data.message);
+            getData();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false)
+        }
     }
 
 
@@ -107,7 +115,7 @@ export default function ProductIndex() {
             sorter: true,
             sortDirections: ['ascend','descend','ascend'],
             defaultSortOrder : tableState.sortColumn === 4 && tableState.sortOrder,
-            columnKey: 3,
+            columnKey: 4,
             render: (text, record) => {
                 return 'Rp. '+text.toLocaleString();
             },
@@ -124,6 +132,31 @@ export default function ProductIndex() {
                 />
             },
             width: 100,
+        },
+        {
+            title: "Last Update",
+            dataIndex: "updated_at",
+            key: "updated_at",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 5 && tableState.sortOrder,
+            columnKey: 5,
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 6 && tableState.sortOrder,
+            columnKey: 6,
+            render: (text, record) => {
+                return (
+                    text? <Tag color="green">Active</Tag> :<Tag color="red">Disabled</Tag>
+                )
+            },
+            width: 120,
+            align : "center"
         },
         {
             title: "Actions",

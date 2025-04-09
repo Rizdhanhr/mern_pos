@@ -52,10 +52,18 @@ export default function ProductEdit(){
                 name: editData.name,
                 priceSell: editData.price_sell,
                 priceBuy : editData.price_buy,
-                category: editData.category_id,
-                brand: editData.brand_id,
+                category: editData.category.id,
+                brand: editData.brand.id,
                 status : editData.status? true : false
             });
+            setFileList([
+                {
+                    uid: "-1",
+                    name: "image.jpg",
+                    status: "done",
+                    url: import.meta.env.VITE_IMAGE_URL + "/product/" + editData.images,
+                },
+            ]);
             setCategory(resCategory.data.data);
             setBrand(resBrand.data.data);
         } catch (error) {
@@ -117,32 +125,33 @@ export default function ProductEdit(){
     
 
     async function formSubmit() {
-      
-        // setIsLoading(true);
-        // setErrors({});
-        
-        // try {
-        //     const formData = new FormData();  
-        //     formData.append("name", form.name);
-        //     formData.append("priceSell", form.priceSell);
-        //     formData.append("priceBuy", form.priceBuy);
-        //     formData.append("brand", form.brand);
-        //     formData.append("category", form.category);
-        //     formData.append("status", form.status);
-        //     if (fileList && fileList.length > 0) {
-        //         formData.append("image", fileList[0].originFileObj);
-        //     };
-        //     // const response = await ProductService.create(formData);
-        //     // alertSuccess(response.data.message);
-        //     // navigate('/product');
-        // } catch (error) {
-        //     if (error.status === 422) {
-        //         const parsedErrors = errorValidation(error.response);
-        //         setErrors(parsedErrors);
-        //     }                        
-        // } finally {
-        //     setIsLoading(false);
-        // }
+        setIsLoading(true);
+        setErrors({});
+        try {
+            const formData = new FormData();  
+            formData.append("name", form.name);
+            formData.append("priceSell", form.priceSell);
+            formData.append("priceBuy", form.priceBuy);
+            formData.append("brand", form.brand);
+            formData.append("category", form.category);
+            formData.append("status", form.status);
+            if (fileList && fileList.length > 0) {
+                const file = fileList[0];
+                if (file.originFileObj) {
+                    formData.append("image", file.originFileObj); // only append if user uploaded new
+                }
+            }
+            const response = await ProductService.update(id, formData);
+            alertSuccess(response.data.message);
+            navigate('/product');
+        } catch (error) {
+            if (error.status === 422) {
+                const parsedErrors = errorValidation(error.response);
+                setErrors(parsedErrors);
+            }                        
+        } finally {
+            setIsLoading(false);
+        }
     }   
 
    
@@ -234,6 +243,7 @@ export default function ProductEdit(){
                                     onPreview={onPreview}
                                     maxCount={1}
                                     beforeUpload={beforeUpload}
+                                    
                                 >
                                     {fileList.length < 3 && "+ Upload"}
                                 </Upload>

@@ -1,5 +1,5 @@
 import { React, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import PublicRoute from "./PublicRoutes";
 import PrivateRoute from "./PrivateRoutes";
 import NotFound from "../pages/errors/404";
@@ -124,10 +124,10 @@ export default function AppRoutes() {
 
       {/* Error Page */}
 
-      <Route path="/404" element={<NotFound />} />
-      <Route path="/403" element={<Forbidden />} />
-      <Route path="/500" element={<ServerError />} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="/error/404" element={<NotFound />} />
+      <Route path="/error/403" element={<Forbidden />} />
+      <Route path="/error/500" element={<ServerError />} />
+      <Route path="*" element={<Navigate to="/error/404" replace />} />
     </Routes>
   );
 }

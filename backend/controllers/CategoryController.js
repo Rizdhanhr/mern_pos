@@ -1,24 +1,18 @@
 const Category = require("../models/Category.js");
 const { formatDate } = require("../helpers/dateHelper.js");
 const { Op } = require("sequelize");
+const CategoryResource = require("../resources/CategoryResource.js");
 
 class CategoryController {
   static async index(req, res, next) {
     try {
-      const category = await Category.findAll({
-        order: [["name", "ASC"]]
-      });
+      const category = await Category.findAll();
+      const response = {
+        success: true,
+        data: CategoryResource.collection(category)
+      };
 
-      const result = category.map(cr => {
-        return {
-          id: cr.id,
-          name: cr.name,
-          created_at: formatDate(cr.created_at),
-          updated_at: formatDate(cr.updated_at)
-        };
-      });
-
-      return res.status(200).json({ success: true, data: result });
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -72,16 +66,13 @@ class CategoryController {
         offset: (page - 1) * perPage
       });
 
-      const result = category.map(cr => ({
-        id: cr.id,
-        name: cr.name,
-        created_at: formatDate(cr.created_at),
-        updated_at: formatDate(cr.updated_at)
-      }));
+      const response = {
+        success: true,
+        data: CategoryResource.collection(category),
+        total: totalCategory
+      };
 
-      return res
-        .status(200)
-        .json({ success: true, data: result, total: totalCategory });
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -106,14 +97,12 @@ class CategoryController {
         res
       );
 
-      const data = {
-        id: category.id,
-        name: category.name,
-        created_at: formatDate(category.created_at),
-        updated_at: formatDate(category.updated_at)
+      const response = {
+        success: true,
+        data: new CategoryResource(category).toJSON()
       };
 
-      return res.status(200).json({ succes: true, data: data });
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }

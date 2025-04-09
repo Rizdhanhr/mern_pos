@@ -8,6 +8,7 @@ const Product = require("../models/Product.js");
 const Brand = require("../models/Brand.js");
 const Category = require("../models/Category.js");
 const uploadDir = path.join(__dirname, "../public/product");
+const ProductResource = require("../resources/ProductResource.js");
 
 class ProductController {
   static async index(req, res, next) {
@@ -48,7 +49,9 @@ class ProductController {
         "brand.name",
         "category.name",
         "price_buy",
-        "price_sell"
+        "price_sell",
+        "updated_at",
+        "status"
       ];
       const relationModels = { brand: Brand, category: Category };
 
@@ -95,9 +98,14 @@ class ProductController {
         limit: parseInt(perPage),
         offset: (page - 1) * perPage
       });
-      return res
-        .status(200)
-        .json({ success: true, data: product, total: totalProduct });
+
+      const response = {
+        success: true,
+        data: ProductResource.collection(product),
+        total: totalProduct
+      };
+
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -111,6 +119,8 @@ class ProductController {
       )}`;
       const filePath = path.join(uploadDir, fileName);
       fs.writeFileSync(filePath, req.file.buffer);
+      let statusString = req.body.status;
+      let statusBoolean = statusString === "true";
       await Product.create(
         {
           name: req.body.name,
@@ -118,7 +128,7 @@ class ProductController {
           price_buy: req.body.priceBuy,
           category_id: req.body.category,
           brand_id: req.body.brand,
-          status: Boolean(req.body.status) ? 1 : 0,
+          status: statusBoolean,
           images: fileName
         },
         { user: req.user }
@@ -133,10 +143,22 @@ class ProductController {
   static async show(req, res, next) {
     try {
       const product = await Product.findOrFail(
-        { where: { id: req.params.id } },
+        {
+          where: { id: req.params.id },
+          include: [
+            { model: Brand, as: "brand", attributes: ["id", "name"] },
+            { model: Category, as: "category", attributes: ["id", "name"] }
+          ]
+        },
         res
       );
-      return res.status(200).json({ success: true, data: product });
+
+      const response = {
+        success: true,
+        data: new ProductResource(product).toJSON()
+      };
+
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -144,6 +166,43 @@ class ProductController {
 
   static async update(req, res, next) {
     try {
+      const product = await Product.findOrFail(
+        {
+          where: { id: req.params.id }
+        },
+        res
+      );
+
+      let fileName = product.images;
+      if (req.file) {
+        fileName = `${Date.now()}-${"Product"}-${req.file.originalname.replace(
+          /\s+/g,
+          "_"
+        )}`;
+        const filePath = path.join(uploadDir, fileName);
+        fs.writeFileSync(filePath, req.file.buffer);
+        const oldFilePath = path.join(uploadDir, product.images || "");
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+      }
+
+      let statusString = req.body.status;
+      let statusBoolean = statusString === "true";
+      await product.update(
+        {
+          name: req.body.name,
+          price_sell: req.body.priceSell,
+          price_buy: req.body.priceBuy,
+          category_id: req.body.category,
+          brand_id: req.body.brand,
+          status: statusBoolean ? 1 : 0,
+          images: fileName
+        },
+        { user: req.user }
+      );
+
+      return res.status(200).json({ succes: true, message: "Data Updated" });
     } catch (error) {
       next(error);
     }
@@ -151,6 +210,18 @@ class ProductController {
 
   static async delete(req, res, next) {
     try {
+      const product = await Product.findOrFail(
+        {
+          where: { id: req.params.id }
+        },
+        res
+      );
+      const filePath = path.join(uploadDir, product.images);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      await product.destroy();
+      return res.status(200).json({ success: true, message: "Data Deleted" });
     } catch (error) {
       next(error);
     }

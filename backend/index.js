@@ -42,7 +42,7 @@ app.use("/v1/dashboard", isAuth, dashboardRouter);
 app.use("/v1/user", isAuth, userRouter);
 app.use("/v1/brand", isAuth, brandRouter);
 app.use("/v1/category", isAuth, categoryRouter);
-app.use("/v1/product", productRouter);
+app.use("/v1/product", isAuth, productRouter);
 
 app.use(errorMiddleware);
 

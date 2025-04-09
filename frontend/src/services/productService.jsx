@@ -34,6 +34,9 @@ class ProductService {
   static update(id, data) {
     return axiosInstance.put(`/product/${id}`, data);
   }
+  static delete(id) {
+    return axiosInstance.delete(`/product/${id}`);
+  }
 }
 
 export default ProductService;
