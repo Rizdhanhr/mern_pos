@@ -25,16 +25,23 @@ class AuthController {
       };
 
       const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m"
+        expiresIn: "1m"
       });
       const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-        expiresIn: "7d"
+        expiresIn: "2m"
       });
+
+      // res.cookie("refreshToken", refreshToken, {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_MODE === "production",
+      //   sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
+      //   maxAge: 7 * 24 * 60 * 60 * 1000
+      // });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
+        secure: process.env.NODE_MODE === "server",
+        sameSite: process.env.NODE_ENV === "server" ? "None" : "Lax",
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
 
@@ -72,7 +79,7 @@ class AuthController {
             payload,
             process.env.ACCESS_TOKEN_SECRET,
             {
-              expiresIn: "15m"
+              expiresIn: "15s"
             }
           );
 

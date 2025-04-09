@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { HelmetProvider } from "react-helmet-async";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ProgressBar from './components/loading/ProgressBar';
 import AppRoutes from './routes/AppRoutes';
 
-function App() {
-  
 
+function App() {
   return (
     <>
       <HelmetProvider>

@@ -8,4 +8,5 @@ export const getToken = () => {
 
 export const removeToken = () => {
   localStorage.removeItem("accessToken");
+  // navigate("/404");
 };

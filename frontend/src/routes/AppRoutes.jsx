@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { React, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import PublicRoute from "./PublicRoutes";
 import PrivateRoute from "./PrivateRoutes";
 import NotFound from "../pages/errors/404";
@@ -16,8 +16,17 @@ import CategoryEdit from "../pages/category/Edit";
 import ProductIndex from "../pages/product/Index";
 import ProductCreate from "../pages/product/Create";
 import ProductEdit from "../pages/product/Edit";
+import navigateHelper from "../utils/navigateHelper";
 
 export default function AppRoutes() {
+  const navigate = useNavigate();
+  useEffect(
+    () => {
+      navigateHelper.navigate = navigate;
+    },
+    [navigate]
+  );
+
   return (
     <Routes>
       {/* Autentikasi */}
