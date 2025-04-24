@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const BrandController = require(__dirname +
-  "/../controllers/BrandController.js");
-const BrandValidator = require(__dirname + "/../validators/BrandValidator.js");
+const BrandController = require("../controllers/BrandController.js");
+const BrandValidator = require("../validators/BrandValidator.js");
 const validationMessage = require("../middlewares/validationMiddleware.js");
 
 router.get("/", BrandController.index);

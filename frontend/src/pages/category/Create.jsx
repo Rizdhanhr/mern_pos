@@ -46,7 +46,7 @@ export default function CategoryCreate(){
                 <Cards>
                     <div className="mb-3">
                         <label className="form-label">Name <span style={{ color:'red' }}>*</span></label>
-                        <input onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
+                        <input value={form.name} onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
                        {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
                     </div>
                 </Cards>

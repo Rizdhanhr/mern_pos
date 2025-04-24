@@ -1,6 +1,9 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../config/db");
 const applyFindOrFail = require("../helpers/findOrFailHelper");
+const Unit = require('./Unit'); // ⬅️ langsung require
+const Brand = require('./Brand');
+const Category = require('./Category');
 
 
 class Product extends Model {}
@@ -15,6 +18,13 @@ Product.init(
       allowNull: false,
     },
     brand_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    stock: {
+      type: DataTypes.INTEGER,
+    },
+    unit_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -69,16 +79,18 @@ Product.init(
 applyFindOrFail(Product);
 
 setImmediate(() => {
-  Product.belongsTo(sequelize.models.Brand, {
+  Product.belongsTo(Brand, {
     foreignKey: "brand_id",
     as: "brand"
   });
-   Product.belongsTo(sequelize.models.Category, {
+  Product.belongsTo(Category, {
     foreignKey: "category_id",
     as: "category"
   });
+  Product.belongsTo(Unit, {
+    foreignKey: "unit_id",
+    as: "unit"
+  });
 });
-
-// Product.belongsTo(Category, { foreignKey: "category_id", as: "category" });
 
 module.exports = Product;

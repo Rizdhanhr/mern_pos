@@ -1,4 +1,5 @@
 const Brand = require("../models/Brand.js");
+const Product = require("../models/Product.js");
 const { Op } = require("sequelize");
 const BrandResource = require("../resources/BrandResource.js");
 
@@ -134,6 +135,19 @@ class BrandController {
         },
         res
       );
+
+      const countProduct = await Product.count({
+        where: {
+          brand_id: id
+        }
+      });
+
+      if (countProduct > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "Brand cannot be deleted because it is used in product"
+        });
+      }
 
       await brand.destroy();
 

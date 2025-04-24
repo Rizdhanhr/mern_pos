@@ -9,6 +9,7 @@ import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link } from "react-router-dom";
 import CategoryService from "../../services/categoryService";
 import BrandService from "../../services/brandService";
+import UnitService from "../../services/unitService";
 import ImgCrop from 'antd-img-crop';
 import ProductService from "../../services/productService";
 
@@ -21,11 +22,13 @@ export default function ProductCreate(){
         priceBuy : 0,
         category: null,
         brand: null,
+        unit: null,
         status : true
     });
 
     const [category, setCategory] = useState([]);
     const [brand, setBrand] = useState([]);
+    const [unit, setUnit] = useState([]);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -40,12 +43,14 @@ export default function ProductCreate(){
     async function getData() {
         setIsLoading(true);
         try {
-            const [resCategory, resBrand] = await Promise.all([
+            const [resCategory, resBrand, resUnit] = await Promise.all([
                 CategoryService.getAll(),
-                BrandService.getAll()
+                BrandService.getAll(),
+                UnitService.getAll()
             ]);
-            console.log(resBrand.data.data);
+            
             setCategory(resCategory.data.data);
+            setUnit(resUnit.data.data);
             setBrand(resBrand.data.data);
         } catch (error) {
             console.log(error);
@@ -66,6 +71,13 @@ export default function ProductCreate(){
         .map(ct => ({
         value: ct.id,
         label: ct.name
+        }));
+    
+    const optionUnit = () => unit
+        .sort((a, b) => a.symbol.localeCompare(b.symbol)) 
+        .map(ct => ({
+        value: ct.id,
+        label: ct.symbol
     }));
     
     const onChange = ({ fileList: newFileList }) => {
@@ -115,6 +127,7 @@ export default function ProductCreate(){
             formData.append("priceBuy", form.priceBuy);
             formData.append("brand", form.brand);
             formData.append("category", form.category);
+            formData.append("unit", form.unit);
             formData.append("status", form.status);
             if (fileList && fileList.length > 0) {
                 formData.append("image", fileList[0].originFileObj);
@@ -148,7 +161,7 @@ export default function ProductCreate(){
                             <input value={form.name} onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
                             {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
                         </div>
-                        <div className="col-md-6 mb-3">
+                        <div className="col-md-4 mb-3">
                             <label className="form-label">Category <span style={{ color:'red' }}>*</span></label>
                             <Select
                                 status={errors.category && 'error'}
@@ -162,7 +175,21 @@ export default function ProductCreate(){
                             />
                              {errors.category && <span style={{ color: "red" }}>{errors.category}</span>}
                         </div>
-                        <div className="col-md-6 mb-3">
+                        <div className="col-md-4 mb-3">
+                            <label className="form-label">Unit <span style={{ color:'red' }}>*</span></label>
+                            <Select
+                                status={errors.unit && 'error'}
+                                showSearch
+                                placeholder="Select Unit"
+                                optionFilterProp="label"
+                                style={{ width: '100%' }}
+                                value={form.categorunity}
+                                options={optionUnit()}
+                                onChange={(e) => setForm(prev => ({ ...prev, unit: e }))}
+                            />
+                             {errors.unit && <span style={{ color: "red" }}>{errors.unit}</span>}
+                        </div>
+                        <div className="col-md-4 mb-3">
                             <label className="form-label">Brand <span style={{ color:'red' }}>*</span></label>
                             <Select
                                 status={errors.brand && 'error'}
@@ -211,7 +238,7 @@ export default function ProductCreate(){
                         </div>
                         <div className="col-md-3 mb-3">  
                             <label htmlFor="formFile" className="form-label">Images (PNG/JPG/JPEG) <span style={{ color:'red' }}>*</span></label>
-                            <ImgCrop aspect={686 / 416} modalWidth={686} showGrid rotationSlider  showReset>
+                            <ImgCrop aspect={550 / 550} modalWidth={550} showGrid rotationSlider  showReset>
                                 <Upload
                                  accept=".png,.jpg,.jpeg"
                                     // customRequest={customRequest}

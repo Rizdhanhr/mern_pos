@@ -37,7 +37,13 @@ class ProductValidator {
         .isInt()
         .withMessage("The category field is required.")
         .notEmpty()
-        .withMessage("The category field is required.")
+        .withMessage("The category field is required."),
+      body("unit")
+        .trim()
+        .isInt()
+        .withMessage("The unit field is required.")
+        .notEmpty()
+        .withMessage("The unit field is required.")
     ];
   }
 
@@ -77,7 +83,13 @@ class ProductValidator {
         .isInt()
         .withMessage("The category field is required.")
         .notEmpty()
-        .withMessage("The category field is required.")
+        .withMessage("The category field is required."),
+      body("unit")
+        .trim()
+        .isInt()
+        .withMessage("The unit field is required.")
+        .notEmpty()
+        .withMessage("The unit field is required.")
     ];
   }
 }

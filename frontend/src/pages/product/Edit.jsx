@@ -9,6 +9,7 @@ import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import CategoryService from "../../services/categoryService";
 import BrandService from "../../services/brandService";
+import UnitService from "../../services/unitService";
 import ImgCrop from 'antd-img-crop';
 import ProductService from "../../services/productService";
 
@@ -22,11 +23,13 @@ export default function ProductEdit(){
            priceBuy : 0,
            category: null,
            brand: null,
+           unit: null,
            status : true
     });
 
     const [category, setCategory] = useState([]);
     const [brand, setBrand] = useState([]);
+    const [unit, setUnit] = useState([]);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -41,19 +44,21 @@ export default function ProductEdit(){
     async function getData() {
         setIsLoading(true);
         try {
-            const [resCategory, resBrand, resData] = await Promise.all([
+            const [resCategory, resBrand, resUnit, resData] = await Promise.all([
                 CategoryService.getAll(),
                 BrandService.getAll(),
+                UnitService.getAll(),
                 ProductService.getById(id)
             ]);
             const editData = resData.data.data;
-            console.log(editData);
+            
             setForm({
                 name: editData.name,
                 priceSell: editData.price_sell,
                 priceBuy : editData.price_buy,
                 category: editData.category.id,
                 brand: editData.brand.id,
+                unit: editData.unit.id,
                 status : editData.status? true : false
             });
             setFileList([
@@ -66,6 +71,7 @@ export default function ProductEdit(){
             ]);
             setCategory(resCategory.data.data);
             setBrand(resBrand.data.data);
+            setUnit(resUnit.data.data);
         } catch (error) {
             console.log(error);
         }finally{
@@ -85,6 +91,13 @@ export default function ProductEdit(){
         .map(ct => ({
         value: ct.id,
         label: ct.name
+        }));
+    
+    const optionUnit = () => unit
+        .sort((a, b) => a.symbol.localeCompare(b.symbol)) 
+        .map(ct => ({
+        value: ct.id,
+        label: ct.symbol
     }));
     
     const onChange = ({ fileList: newFileList }) => {
@@ -134,6 +147,7 @@ export default function ProductEdit(){
             formData.append("priceBuy", form.priceBuy);
             formData.append("brand", form.brand);
             formData.append("category", form.category);
+            formData.append("unit", form.unit);
             formData.append("status", form.status);
             if (fileList && fileList.length > 0) {
                 const file = fileList[0];
@@ -170,7 +184,7 @@ export default function ProductEdit(){
                             <input value={form.name} onChange={(e) => setForm((prevForm) => ({ ...prevForm, name: e.target.value }))} type="text" className={`form-control ${errors.name && 'is-invalid'}`} />
                             {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
                         </div>
-                        <div className="col-md-6 mb-3">
+                        <div className="col-md-4 mb-3">
                             <label className="form-label">Category <span style={{ color:'red' }}>*</span></label>
                             <Select
                                 status={errors.category && 'error'}
@@ -184,7 +198,21 @@ export default function ProductEdit(){
                             />
                              {errors.category && <span style={{ color: "red" }}>{errors.category}</span>}
                         </div>  
-                        <div className="col-md-6 mb-3">
+                        <div className="col-md-4 mb-3">
+                            <label className="form-label">Unit <span style={{ color:'red' }}>*</span></label>
+                            <Select
+                                status={errors.unit && 'error'}
+                                showSearch
+                                placeholder="Select Unit"
+                                optionFilterProp="label"
+                                style={{ width: '100%' }}
+                                value={form.unit}
+                                options={optionUnit()}
+                                onChange={(e) => setForm(prev => ({ ...prev, unit: e }))}
+                            />
+                             {errors.unit && <span style={{ color: "red" }}>{errors.unit}</span>}
+                        </div>  
+                        <div className="col-md-4 mb-3">
                             <label className="form-label">Brand <span style={{ color:'red' }}>*</span></label>
                             <Select
                                 status={errors.brand && 'error'}

@@ -7,6 +7,7 @@ const path = require("path");
 const Product = require("../models/Product.js");
 const Brand = require("../models/Brand.js");
 const Category = require("../models/Category.js");
+const Unit = require("../models/Unit.js");
 const uploadDir = path.join(__dirname, "../public/product");
 const ProductResource = require("../resources/ProductResource.js");
 
@@ -48,12 +49,13 @@ class ProductController {
         "name",
         "brand.name",
         "category.name",
+        "stock",
         "price_buy",
         "price_sell",
         "updated_at",
         "status"
       ];
-      const relationModels = { brand: Brand, category: Category };
+      const relationModels = { brand: Brand, category: Category, unit: Unit };
 
       const selectedColumn = column[parseInt(sortColumn)];
 
@@ -75,6 +77,7 @@ class ProductController {
           { name: { [Op.like]: `%${search}%` } },
           { price_buy: { [Op.like]: `%${search}%` } },
           { price_sell: { [Op.like]: `%${search}%` } },
+          { stock: { [Op.like]: `%${search}%` } },
           { "$brand.name$": { [Op.like]: `%${search}%` } },
           { "$category.name$": { [Op.like]: `%${search}%` } }
         ]
@@ -84,7 +87,8 @@ class ProductController {
         where: whereCondition,
         include: [
           { model: Brand, as: "brand" },
-          { model: Category, as: "category" }
+          { model: Category, as: "category" },
+          { model: Unit, as: "unit" }
         ]
       });
 
@@ -92,7 +96,8 @@ class ProductController {
         where: whereCondition,
         include: [
           { model: Brand, as: "brand", attributes: ["id", "name"] },
-          { model: Category, as: "category", attributes: ["id", "name"] }
+          { model: Category, as: "category", attributes: ["id", "name"] },
+          { model: Unit, as: "unit", attributes: ["id", "name", "symbol"] }
         ],
         order: orderCondition,
         limit: parseInt(perPage),
@@ -128,6 +133,7 @@ class ProductController {
           price_buy: req.body.priceBuy,
           category_id: req.body.category,
           brand_id: req.body.brand,
+          unit_id: req.body.unit,
           status: statusBoolean,
           images: fileName
         },
@@ -147,12 +153,12 @@ class ProductController {
           where: { id: req.params.id },
           include: [
             { model: Brand, as: "brand", attributes: ["id", "name"] },
-            { model: Category, as: "category", attributes: ["id", "name"] }
+            { model: Category, as: "category", attributes: ["id", "name"] },
+            { model: Unit, as: "unit", attributes: ["id", "name", "symbol"] }
           ]
         },
         res
       );
-
       const response = {
         success: true,
         data: new ProductResource(product).toJSON()
@@ -196,6 +202,7 @@ class ProductController {
           price_buy: req.body.priceBuy,
           category_id: req.body.category,
           brand_id: req.body.brand,
+          unit_id: req.body.unit,
           status: statusBoolean ? 1 : 0,
           images: fileName
         },

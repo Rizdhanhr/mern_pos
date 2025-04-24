@@ -47,12 +47,13 @@ export default function Navbar() {
           </button>
           <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href=".">
-              <img
+              POS
+              {/* <img
                 src={Logo}
                 style={{ height: 25, width: 40 }}
                 alt="Tabler"
                 className="navbar-brand-image"
-              />
+              /> */}
             </a>
           </h1>
           <div className="navbar-nav flex-row order-md-last">
@@ -98,7 +99,7 @@ export default function Navbar() {
                 </li>
                 <li
                   className={`nav-item dropdown ${
-                    isActive(["/brand", "/category", "/product"])
+                    isActive(["/brand", "/category", "/product","/unit"])
                       ? "active"
                       : ""
                   }`}
@@ -142,11 +143,26 @@ export default function Navbar() {
                         >
                           Product
                         </Link>
+                         <Link
+                          className={`dropdown-item ${
+                            isActive(["/unit"]) ? "active" : ""
+                          }`}
+                          to={"/unit"}
+                        >
+                          Unit
+                        </Link>
                       </div>
                     </div>
                   </div>
                 </li>
-                <li className={`nav-item dropdown`}>
+                
+                <li
+                  className={`nav-item dropdown ${
+                    isActive(["/user", "/role"])
+                      ? "active"
+                      : ""
+                  }`}
+                >
                   <a
                     className="nav-link dropdown-toggle"
                     href="#navbar-base"
@@ -155,71 +171,34 @@ export default function Navbar() {
                     role="button"
                     aria-expanded="false"
                   >
-                    <i className="bi bi-cart"></i>
+                    <i className="bi bi-person-fill-gear"></i>
                     &nbsp;
-                    <span className="nav-link-title">Order</span>
+                    <span className="nav-link-title">Access Control</span>
                   </a>
                   <div className="dropdown-menu">
                     <div className="dropdown-menu-columns">
                       <div className="dropdown-menu-column">
-                        <a className={`dropdown-item`}>Voucher</a>
-                        <a href="" className={`dropdown-item }`}>
-                          Topup
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li className={`nav-item dropdown }`}>
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#navbar-base"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                    role="button"
-                    aria-expanded="false"
-                  >
-                    <i className="bi bi-gear"></i>
-                    &nbsp;
-                    <span className="nav-link-title">User Management</span>
-                  </a>
-                  <div className="dropdown-menu">
-                    <div className="dropdown-menu-columns">
-                      <div className="dropdown-menu-column">
-                        <a className={`dropdown-item `} href="">
-                          User
-                        </a>
-                        <a className={`dropdown-item}`} href="">
+                        <Link
+                          className={`dropdown-item ${
+                            isActive(["/role"]) ? "active" : ""
+                          }`}
+                          to={"/role"}
+                        >
                           Role
-                        </a>
+                        </Link>
+                        <Link
+                          className={`dropdown-item ${
+                            isActive(["/user"]) ? "active" : ""
+                          }`}
+                          to={"/user"}
+                        >
+                          User
+                        </Link>
                       </div>
                     </div>
                   </div>
                 </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="./form-elements.html">
-                    <span className="nav-link-icon d-md-none d-lg-inline-block">
-                      {/* Download SVG icon from http://tabler-icons.io/i/checkbox */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="icon"
-                        width={24}
-                        height={24}
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M9 11l3 3l8 -8" />
-                        <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
-                      </svg>
-                    </span>
-                    <span className="nav-link-title">Report</span>
-                  </a>
-                </li>
+                
               </ul>
             </div>
           </div>

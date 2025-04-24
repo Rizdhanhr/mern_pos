@@ -1,5 +1,5 @@
 const Category = require("../models/Category.js");
-const { formatDate } = require("../helpers/dateHelper.js");
+const Product = require("../models/Product.js");
 const { Op } = require("sequelize");
 const CategoryResource = require("../resources/CategoryResource.js");
 
@@ -136,6 +136,18 @@ class CategoryController {
         },
         res
       );
+      const countProduct = await Product.count({
+        where: {
+          category_id: id
+        }
+      });
+
+      if (countProduct > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "Category cannot be deleted because it is used in product"
+        });
+      }
 
       await category.destroy();
       return res.status(200).json({ success: true, message: "Data Deleted" });

@@ -40,7 +40,15 @@ User.init(
     timestamps: true,
     underscored: true,
     createdAt: "created_at",
-    updatedAt: "updated_at"
+    updatedAt: "updated_at",
+    defaultScope: {
+      attributes: { exclude: ["password"] }
+    },
+    scopes: {
+      withPassword: {
+        attributes: { include: ["password"] } // ambil semua, termasuk password
+      }
+    }
   }
 );
 

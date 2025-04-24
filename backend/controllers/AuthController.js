@@ -7,7 +7,9 @@ class AuthController {
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
-      const user = await User.findOne({ where: { email } });
+      const user = await User.scope("withPassword").findOne({
+        where: { email }
+      });
       const failedResponse = {
         success: false,
         message: "These credentials doesn't match our records."
@@ -25,7 +27,7 @@ class AuthController {
       };
 
       const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m"
+        expiresIn: "120m"
       });
       const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: "1d"
@@ -79,7 +81,7 @@ class AuthController {
             payload,
             process.env.ACCESS_TOKEN_SECRET,
             {
-              expiresIn: "15m"
+              expiresIn: "120m"
             }
           );
 

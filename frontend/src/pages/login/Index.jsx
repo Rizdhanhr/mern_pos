@@ -54,6 +54,7 @@ export default function LoginIndex() {
                 <div className="mb-3">
                   <label className="form-label">Email address</label>
                   <input
+                    value={form.email}
                     type="email"
                     className={`form-control ${errors.email && 'is-invalid'}`}
                     placeholder="your@email.com"
@@ -68,6 +69,7 @@ export default function LoginIndex() {
                     
                   </label>
                   <input
+                      value={form.password}
                       type="password"
                       onChange={(e) => setForm({...form, password:e.target.value})}
                       className={`form-control ${errors.password && 'is-invalid'}`}

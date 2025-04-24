@@ -8,13 +8,7 @@ const validationMiddleware = (req, res, next) => {
   if (errors.length > 0) {
     return res.status(422).json({ message: "Validation error", errors });
   }
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   return res.status(422).json({
-  //     message: "Validation error",
-  //     errors: errors.array({ onlyFirstError: true })
-  //   });
-  // }
+
   next();
 };
 

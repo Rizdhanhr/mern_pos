@@ -2,6 +2,7 @@ import axios from "axios";
 import { getToken, removeToken, setToken} from "../utils/authHelper";
 import AuthService from "./authService";
 import navigateHelper from "../utils/navigateHelper";
+import { alertError } from "../components/alert/Alert";
 
 const link = import.meta.env.VITE_BACKEND_URL;
 const axiosInstance = axios.create({
@@ -22,38 +23,6 @@ const processQueue = (error, token = null) => {
   });
   failedQueue = [];
 };
-
-// async function handleRefreshToken(originalRequest) {
-//     if (!refreshTokenPromise) {
-//       refreshTokenPromise = (async () => {
-//         try {
-//           const response = await AuthService.refreshToken();
-//           const newAccessToken = response.data.token;
-//           setToken(newAccessToken);
-//           axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-//           failedRequestsQueue.forEach(callback => callback(newAccessToken));
-//           failedRequestsQueue.length = 0;
-//           refreshTokenPromise = null; 
-//           return newAccessToken;
-//         } catch (refreshError) {
-//           removeToken();
-//           navigateHelper.navigate("/login");
-//           failedRequestsQueue.length = 0; // Kosongkan queue jika refresh gagal
-//           refreshTokenPromise = null; 
-//           throw refreshError;
-//         } 
-//       })();
-//   }
-//     return new Promise((resolve, reject) => {
-//       failedRequestsQueue.push(newAccessToken => {
-//         if (!newAccessToken) {
-//           reject(new Error("Refresh token failed"));
-//         }
-//         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-//         resolve(axiosInstance(originalRequest)); 
-//       });
-//     });
-// }
 
 axiosInstance.interceptors.request.use(
   config => {
@@ -108,11 +77,13 @@ axiosInstance.interceptors.response.use(
           isRefresh = false; 
         }    
       } else if (status >= 500) {
-        navigateHelper.navigate("/error/500");
+        // navigateHelper.navigate("/error/500");
       } else if (status === 403) {
-        navigateHelper.navigate("/error/403");
+        // navigateHelper.navigate("/error/403");
       } else if (status === 404) {
-        navigateHelper.navigate("/error/404");
+        // navigateHelper.navigate("/error/404");
+      } else if (status === 409) {
+        alertError(error.response.data.message);
       }
     } else {
       navigateHelper.navigate("/error/500");

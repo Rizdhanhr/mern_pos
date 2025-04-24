@@ -1,6 +1,14 @@
 const logger = require("../config/logger");
 const errorMiddleware = (err, req, res, next) => {
-  logger.error(`Error: ${err.message}, Stack: ${err.stack}`);
+  logger.error(`
+    [ERROR]
+    URL     : ${req.originalUrl}
+    Method  : ${req.method}
+    Status  : ${res.statusCode}
+    Message : ${err.message}
+    Stack   : ${err.stack}
+  `);
+
   const statusCode = err.status || 500;
   const env = process.env.NODE_ENV || "development";
   const errorResponse = {

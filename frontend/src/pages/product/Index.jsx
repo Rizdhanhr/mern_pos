@@ -9,6 +9,7 @@ import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
 import { Image, Tag } from "antd";
+import { alertError } from "../../components/alert/Alert";
 
 export default function ProductIndex() {
     const title = "Product";
@@ -16,7 +17,7 @@ export default function ProductIndex() {
     const [tableState, setTableState] = useState({
         page: 1,
         perPage: 10,
-        sortColumn: 5,
+        sortColumn: 6,
         sortOrder: 'descend',
     });
     const [search, setSearch] = useState("");
@@ -55,7 +56,7 @@ export default function ProductIndex() {
             alertSuccess(response.data.message);
             getData();
         } catch (error) {
-            console.log(error);
+           console.log(error);
         } finally {
             setLoading(false)
         }
@@ -96,22 +97,23 @@ export default function ProductIndex() {
                 
         },
         {
-            title: "Price Buy",
-            dataIndex: "price_buy",
-            key: "price_buy",
+            title: "Stock",
+            dataIndex: "stock",
+            key: "stock",
             sorter: true,
             sortDirections: ['ascend','descend','ascend'],
             defaultSortOrder : tableState.sortColumn === 3 && tableState.sortOrder,
             columnKey: 3,
             render: (text, record) => {
-                return 'Rp. '+text.toLocaleString();
+                return text.toLocaleString()+' / '+record.unit.symbol;
             },
-            width: 300
+            width: 150,
+            align: "center"
         },
         {
-            title: "Price Sell",
-            dataIndex: "price_sell",
-            key: "price_sell",
+            title: "Price Buy",
+            dataIndex: "price_buy",
+            key: "price_buy",
             sorter: true,
             sortDirections: ['ascend','descend','ascend'],
             defaultSortOrder : tableState.sortColumn === 4 && tableState.sortOrder,
@@ -119,7 +121,20 @@ export default function ProductIndex() {
             render: (text, record) => {
                 return 'Rp. '+text.toLocaleString();
             },
-            width: 300
+            width: 200
+        },
+        {
+            title: "Price Sell",
+            dataIndex: "price_sell",
+            key: "price_sell",
+            sorter: true,
+            sortDirections: ['ascend','descend','ascend'],
+            defaultSortOrder : tableState.sortColumn === 5 && tableState.sortOrder,
+            columnKey: 5,
+            render: (text, record) => {
+                return 'Rp. '+text.toLocaleString();
+            },
+            width: 200
         },
         {
             title: "Images",
@@ -139,8 +154,8 @@ export default function ProductIndex() {
             key: "updated_at",
             sorter: true,
             sortDirections: ['ascend','descend','ascend'],
-            defaultSortOrder : tableState.sortColumn === 5 && tableState.sortOrder,
-            columnKey: 5,
+            defaultSortOrder : tableState.sortColumn === 6 && tableState.sortOrder,
+            columnKey: 6,
         },
         {
             title: "Status",
@@ -148,8 +163,8 @@ export default function ProductIndex() {
             key: "status",
             sorter: true,
             sortDirections: ['ascend','descend','ascend'],
-            defaultSortOrder : tableState.sortColumn === 6 && tableState.sortOrder,
-            columnKey: 6,
+            defaultSortOrder : tableState.sortColumn === 7 && tableState.sortOrder,
+            columnKey: 7,
             render: (text, record) => {
                 return (
                     text? <Tag color="green">Active</Tag> :<Tag color="red">Disabled</Tag>

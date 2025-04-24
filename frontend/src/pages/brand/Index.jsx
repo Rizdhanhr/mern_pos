@@ -63,7 +63,7 @@ export default function BrandIndex(){
         {
             title: "Name",
             dataIndex: "name",
-            key: " name",
+            key: "name",
             sorter: true,
             sortDirections: ['ascend','descend','ascend'],
             defaultSortOrder : tableState.sortColumn === 0 && tableState.sortOrder,

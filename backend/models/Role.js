@@ -8,6 +8,12 @@ Role.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    description: {
+      type: DataTypes.STRING
+    },
+    is_superadmin: {
+      type: DataTypes.INTEGER
     }
   },
   {
@@ -22,5 +28,12 @@ Role.init(
 );
 
 applyFindOrFail(Role);
+setImmediate(() => {
+  Role.belongsToMany(sequelize.models.Permission, {
+    through: "role_permission",
+    foreignKey: "role_id",
+    timestamps: false
+  });
+});
 
 module.exports = Role;
