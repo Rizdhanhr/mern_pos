@@ -1,18 +1,15 @@
 import React from "react";
-import axiosInstance from "./axiosInstance";
+import axiosService from "./axiosService";
 
 class RoleService {
-  static getAll() {
-    return axiosInstance.get("/role");
-  }
-  static getDatatable(
+  static getAll(
     page = 1,
     perPage = 10,
     search = "",
     sortColumn = 0,
     sortOrder = "ascend"
   ) {
-    return axiosInstance.get("/role/data", {
+    return axiosService.get("/role", {
       params: {
         page: page,
         perPage: perPage,
@@ -22,24 +19,24 @@ class RoleService {
       }
     });
   }
-  static getRolePermission() {
-    return axiosInstance.get(`/role/permission`);
+  static getFormAttributes() {
+    return axiosService.get(`/role/form-attributes`);
   }
 
   static getById(id) {
-    return axiosInstance.get(`/role/${id}`);
+    return axiosService.get(`/role/${id}`);
   }
 
   static create(data) {
-    return axiosInstance.post("/role", data);
+    return axiosService.post("/role", data);
   }
 
   static update(id, data) {
-    return axiosInstance.put(`/role/${id}`, data);
+    return axiosService.put(`/role/${id}`, data);
   }
 
   static delete(id) {
-    return axiosInstance.delete(`/role/${id}`);
+    return axiosService.delete(`/role/${id}`);
   }
 }
 

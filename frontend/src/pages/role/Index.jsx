@@ -3,13 +3,15 @@ import LayoutsAuth from "../../layouts/LayoutsAuth";
 import ButtonCreate from "../../components/button/ButtonCreate";
 import { Helmet } from "react-helmet-async";
 import { Cards } from "../../components/card/Card";
-import RoleService from "../../services/RoleService";
+import RoleService from "../../services/roleService";
 import SearchInput from "../../components/input/SearchInput";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
+import usePermission from "../../hooks/usePermission";
 
-export default function RoleIndex(){
+export default function RoleIndex() {
+    const {can, canAny} = usePermission();
     const title = "Role";
     const [data, setData] = useState([]);
     const [tableState, setTableState] = useState({
@@ -30,7 +32,7 @@ export default function RoleIndex(){
         setLoading(true);
         try {
             const { page, perPage, sortColumn, sortOrder } = tableState;
-            const response = await RoleService.getDatatable(
+            const response = await RoleService.getAll(
                 page,
                 perPage,
                 search,
@@ -38,7 +40,6 @@ export default function RoleIndex(){
                 sortOrder
             );
             setData(response.data.data);
-            
             setTotal(response.data.total);
         } catch (error) {
             console.log(error);
@@ -48,8 +49,7 @@ export default function RoleIndex(){
     }
 
     async function deleteData(id) {
-        try {
-            
+        try {   
             setLoading(true);
             const response = await RoleService.delete(id);
             alertSuccess(response.data.message);
@@ -96,10 +96,14 @@ export default function RoleIndex(){
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/role/${record.id}/edit`});
-                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
-                const dropdown = !record.is_superadmin && <ButtonDropdown items={items} />;
-                return dropdown;
+                if (can("UPDATE-ROLE")) {
+                    items.push({ label: "Edit", type: "link", link: `/role/${record.id}/edit`});
+                }
+                if (can("DELETE-ROLE")) {
+                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });  
+                }
+                const btnOption = canAny(["UPDATE-ROLE","DELETE-ROLE"]) && !record.is_superadmin ? <ButtonDropdown items={items}  /> : null;
+                return btnOption;
             },
             width: 100
         },
@@ -110,7 +114,7 @@ export default function RoleIndex(){
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <LayoutsAuth title={title} button={<ButtonCreate link={'/role/create'} name={'Create Role'} />}>
+            <LayoutsAuth title={title} button={can("CREATE-ROLE") && (<ButtonCreate link={'/role/create'} name={'Create Role'} />)}>
                 <Cards>
                     <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
                     <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>

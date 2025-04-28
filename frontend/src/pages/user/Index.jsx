@@ -8,8 +8,10 @@ import SearchInput from "../../components/input/SearchInput";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
+import usePermission from "../../hooks/usePermission";
 
-export default function UserIndex(){
+export default function UserIndex() {
+    const {can, canAny} = usePermission();
     const title = "User";
     const [data, setData] = useState([]);
     const [tableState, setTableState] = useState({
@@ -30,7 +32,7 @@ export default function UserIndex(){
         setLoading(true);
         try {
             const { page, perPage, sortColumn, sortOrder } = tableState;
-            const response = await UserService.getDatatable(
+            const response = await UserService.getAll(
                 page,
                 perPage,
                 search,
@@ -105,12 +107,18 @@ export default function UserIndex(){
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/user/${record.id}/edit`});
-                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
-                return <ButtonDropdown
+                if (can("UPDATE-USER")) {
+                    items.push({ label: "Edit", type: "link", link: `/user/${record.id}/edit`});  
+                }
+                if (can("DELETE-USER")) {
+                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
+                }
+
+                const btnOption = canAny(["UPDATE-USER", "DELETE-USER"]) && <ButtonDropdown
                     title="Options"
                     items={items}
-                />
+                />;
+                return btnOption;
             },
             width: 100
         },
@@ -121,7 +129,7 @@ export default function UserIndex(){
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <LayoutsAuth title={title} button={<ButtonCreate link={'/user/create'} name={'Create User'} />}>
+            <LayoutsAuth title={title} button={can("CREATE-USER") && (<ButtonCreate link={'/user/create'} name={'Create User'} />) }>
                 <Cards>
                     <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
                     <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>

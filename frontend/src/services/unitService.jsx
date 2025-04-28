@@ -1,19 +1,15 @@
 import React from "react";
-import axiosInstance from "./axiosInstance";
+import axiosService from "./axiosService";
 
 class UnitService {
-  static getAll() {
-    return axiosInstance.get("/unit");
-  }
-
-  static getDatatable(
+  static getAll(
     page = 1,
     perPage = 10,
     search = "",
     sortColumn = 0,
     sortOrder = "ascend"
   ) {
-    return axiosInstance.get("/unit/data", {
+    return axiosService.get("/unit", {
       params: {
         page: page,
         perPage: perPage,
@@ -25,19 +21,19 @@ class UnitService {
   }
 
   static getById(id) {
-    return axiosInstance.get(`/unit/${id}`);
+    return axiosService.get(`/unit/${id}`);
   }
 
   static create(data) {
-    return axiosInstance.post("/unit", data);
+    return axiosService.post("/unit", data);
   }
 
   static update(id, data) {
-    return axiosInstance.put(`/unit/${id}`, data);
+    return axiosService.put(`/unit/${id}`, data);
   }
 
   static delete(id) {
-    return axiosInstance.delete(`/unit/${id}`);
+    return axiosService.delete(`/unit/${id}`);
   }
 }
 

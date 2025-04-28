@@ -9,9 +9,11 @@ import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
 import { Image, Tag } from "antd";
+import usePermission from "../../hooks/usePermission";
 import { alertError } from "../../components/alert/Alert";
 
 export default function ProductIndex() {
+    const {can, canAny} = usePermission();
     const title = "Product";
     const [data, setData] = useState([]);
     const [tableState, setTableState] = useState({
@@ -33,7 +35,7 @@ export default function ProductIndex() {
         setLoading(true);
         try {
             const { page, perPage, sortColumn, sortOrder } = tableState;
-            const response = await ProductService.getDatatable(
+            const response = await ProductService.getAll(
                 page,
                 perPage,
                 search,
@@ -178,12 +180,19 @@ export default function ProductIndex() {
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/product/${record.id}/edit`});
-                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
-                return <ButtonDropdown
+                if (can("UPDATE-PRODUCT")) {
+                    items.push({ label: "Edit", type: "link", link: `/product/${record.id}/edit`}); 
+                }
+                if (can("DELETE-PRODUCT")) {
+                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
+                }
+
+                const btnOption = canAny(["UPDATE-PRODUCT","DELETE-PRODUCT"]) && <ButtonDropdown
                     title="Options"
                     items={items}
                 />
+
+                return btnOption;
             },
             width: 40,
             fixed:"right"
@@ -196,7 +205,7 @@ export default function ProductIndex() {
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <LayoutsAuth title={title} button={<ButtonCreate link={'/product/create'} name={'Create Product'} />}>
+            <LayoutsAuth title={title} button={can("CREATE-PRODUCT") && (<ButtonCreate link={'/product/create'} name={'Create Product'} />)}>
                 <Cards>
                      <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
                     <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>

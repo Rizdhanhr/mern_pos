@@ -1,41 +1,18 @@
-// const { Product, Brand } = require("../models/Index.js");
-const { formatDate } = require("../helpers/dateHelper.js");
 const { Op } = require("sequelize");
-const logger = require("../config/logger.js");
 const fs = require("fs");
 const path = require("path");
 const Product = require("../models/Product.js");
 const Brand = require("../models/Brand.js");
 const Category = require("../models/Category.js");
 const Unit = require("../models/Unit.js");
-const uploadDir = path.join(__dirname, "../public/product");
 const ProductResource = require("../resources/ProductResource.js");
+const BrandResource = require("../resources/BrandResource.js");
+const UnitResource = require("../resources/UnitResource.js");
+const CategoryResource = require("../resources/CategoryResource.js");
+const uploadDir = path.join(__dirname, "../public/product");
 
 class ProductController {
   static async index(req, res, next) {
-    try {
-      const product = await Product.findAll({
-        include: [
-          {
-            model: Brand,
-            as: "brand",
-            attributes: ["id", "name"]
-          },
-          {
-            model: Category,
-            as: "category",
-            attributes: ["id", "name"]
-          }
-        ]
-      });
-
-      return res.status(200).json({ status: true, data: product });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async getData(req, res, next) {
     try {
       const {
         page = 1,
@@ -108,6 +85,27 @@ class ProductController {
         success: true,
         data: ProductResource.collection(product),
         total: totalProduct
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getFormAttributes(req, res, next) {
+    try {
+      const brand = await Brand.findAll();
+      const unit = await Unit.findAll();
+      const category = await Category.findAll();
+
+      const response = {
+        success: true,
+        data: {
+          brand: BrandResource.collection(brand),
+          unit: UnitResource.collection(unit),
+          category: CategoryResource.collection(category)
+        }
       };
 
       return res.status(200).json(response);

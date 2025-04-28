@@ -6,20 +6,6 @@ const { Op } = require("sequelize");
 class UnitController {
   static async index(req, res, next) {
     try {
-      const unit = await Unit.findAll();
-      const response = {
-        success: true,
-        data: UnitResource.collection(unit)
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async getData(req, res, next) {
-    try {
       const {
         page = 1,
         perPage = 10,

@@ -8,8 +8,10 @@ import SearchInput from "../../components/input/SearchInput";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
+import usePermission from "../../hooks/usePermission";
 
-export default function UnitIndex(){
+export default function UnitIndex() {
+    const {can, canAny} = usePermission();
     const title = "Unit";
     const [data, setData] = useState([]);
     const [tableState, setTableState] = useState({
@@ -30,7 +32,7 @@ export default function UnitIndex(){
         setLoading(true);
         try {
             const { page, perPage, sortColumn, sortOrder } = tableState;
-            const response = await UnitService.getDatatable(
+            const response = await UnitService.getAll(
                 page,
                 perPage,
                 search,
@@ -94,12 +96,18 @@ export default function UnitIndex(){
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/unit/${record.id}/edit`});
-                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
-                return <ButtonDropdown
+                if (can("UPDATE-UNIT")) {
+                    items.push({ label: "Edit", type: "link", link: `/unit/${record.id}/edit`}); 
+                }
+                if (can("DELETE-UNIT")) {
+                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });  
+                }
+                const btnOption = canAny(["UPDATE-UNIT", "DELETE-UNIT"]) && <ButtonDropdown
                     title="Options"
                     items={items}
-                />
+                />;
+
+                return btnOption;
             },
             width: 100
         },
@@ -110,7 +118,7 @@ export default function UnitIndex(){
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <LayoutsAuth title={title} button={<ButtonCreate link={'/unit/create'} name={'Create Unit'} />}>
+            <LayoutsAuth title={title} button={can("CREATE-UNIT") && (<ButtonCreate link={'/unit/create'} name={'Create Unit'} />)}>
                 <Cards>
                     <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
                     <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>

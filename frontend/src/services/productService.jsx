@@ -1,15 +1,15 @@
 import React from "react";
-import axiosInstance from "./axiosInstance";
+import axiosService from "./axiosService";
 
 class ProductService {
-  static getDatatable(
+  static getAll(
     page = 1,
     perPage = 10,
     search = "",
     sortColumn = 0,
     sortOrder = "ascend"
   ) {
-    return axiosInstance.get("/product/data", {
+    return axiosService.get("/product", {
       params: {
         page: page,
         perPage: perPage,
@@ -20,8 +20,12 @@ class ProductService {
     });
   }
 
+  static getFormAttributes() {
+    return axiosService.get(`/product/form-attributes`);
+  }
+
   static create(data) {
-    return axiosInstance.post("/product", data, {
+    return axiosService.post("/product", data, {
       headers: {
         "content-type": "multipart/form-data"
       }
@@ -29,14 +33,14 @@ class ProductService {
   }
 
   static getById(id) {
-    return axiosInstance.get(`/product/${id}`);
+    return axiosService.get(`/product/${id}`);
   }
 
   static update(id, data) {
-    return axiosInstance.put(`/product/${id}`, data);
+    return axiosService.put(`/product/${id}`, data);
   }
   static delete(id) {
-    return axiosInstance.delete(`/product/${id}`);
+    return axiosService.delete(`/product/${id}`);
   }
 }
 

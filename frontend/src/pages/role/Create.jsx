@@ -3,7 +3,7 @@ import LayoutsAuth from "../../layouts/LayoutsAuth";
 import { Helmet } from "react-helmet-async";
 import { Cards } from "../../components/card/Card";
 import LoadingOverlay from "../../components/loading/LoadingOverlay";
-import RoleService from "../../services/RoleService";
+import RoleService from "../../services/roleService";
 import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link } from "react-router-dom";
@@ -32,7 +32,7 @@ export default function RoleCreate(){
     async function getData() {
         try {
             setIsLoading(true);
-            const response = await RoleService.getRolePermission();
+            const response = await RoleService.getFormAttributes();
             const dataAll = response.data.data;
             setMenu(dataAll.menu);
             setModule(dataAll.module);

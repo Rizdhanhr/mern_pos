@@ -8,20 +8,6 @@ const sequelize = require("../config/db");
 
 class RoleController {
   static async index(req, res, next) {
-    const role = await Role.findAll();
-
-    const response = {
-      success: true,
-      data: RoleResource.collection(role)
-    };
-    res.status(200).json(response);
-
-    try {
-    } catch (error) {
-      next(error);
-    }
-  }
-  static async getData(req, res, next) {
     try {
       const {
         page = 1,
@@ -91,7 +77,7 @@ class RoleController {
     }
   }
 
-  static async getRolePermission(req, res, next) {
+  static async getFormAttributes(req, res, next) {
     try {
       const menu = await Menu.findAll({
         order: [["name", "asc"]],
@@ -144,7 +130,7 @@ class RoleController {
 
         const permission = req.body.permission;
         if (permission.length > 0) {
-          await createdRole.setPermissions(permission, { transaction: t });
+          await createdRole.setPermission(permission, { transaction: t });
         }
       });
 
@@ -165,7 +151,7 @@ class RoleController {
         res
       );
 
-      const permission = await role.getPermissions({
+      const permission = await role.getPermission({
         attributes: ["id"],
         through: { attributes: [] }
       });
@@ -204,7 +190,7 @@ class RoleController {
 
         const permission = req.body.permission;
         if (permission.length > 0) {
-          await role.setPermissions(permission, { transaction: t });
+          await role.setPermission(permission, { transaction: t });
         }
       });
 

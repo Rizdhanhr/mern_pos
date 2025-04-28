@@ -3,9 +3,10 @@ const User = require("../models/User");
 const Role = require("../models/Role");
 const bcrypt = require("bcryptjs");
 const UserResource = require("../resources/UserResource");
+const RoleResource = require("../resources/RoleResource");
 
 class UserController {
-  static async getData(req, res, next) {
+  static async index(req, res, next) {
     try {
       const {
         page = 1,
@@ -69,6 +70,21 @@ class UserController {
         success: true,
         data: UserResource.collection(user),
         total: totalUser
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getFormAttributes(req, res, next) {
+    try {
+      const role = await Role.findAll();
+
+      const response = {
+        success: true,
+        data: RoleResource.collection(role)
       };
 
       return res.status(200).json(response);

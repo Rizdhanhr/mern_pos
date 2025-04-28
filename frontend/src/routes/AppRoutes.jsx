@@ -39,88 +39,119 @@ export default function AppRoutes() {
   const routesConfig = [
     { path: "/login", element: <LoginIndex />, protected: false, props: {} },
     { path: "/", element: <Dashboard />, protected: true, props: {} },
-    { path: "/brand", element: <BrandIndex />, protected: true, props: {} },
+    {
+      path: "/brand",
+      element: <BrandIndex />,
+      protected: true,
+      props: { permission: "VIEW-BRAND" }
+    },
     {
       path: "/brand/create",
       element: <BrandCreate />,
       protected: true,
-      props: {}
+      props: { permission: "CREATE-BRAND" }
     },
     {
       path: "/brand/:id/edit",
       element: <BrandEdit />,
       protected: true,
-      props: { someProp: "value" }
+      props: { permission: "UPDATE-BRAND" }
     },
     {
       path: "/category",
       element: <CategoryIndex />,
       protected: true,
-      props: {}
+      props: { permission: "VIEW-CATEGORY" }
     },
     {
       path: "/category/create",
       element: <CategoryCreate />,
       protected: true,
-      props: {}
+      props: { permission: "CREATE-CATEGORY" }
     },
     {
       path: "/category/:id/edit",
       element: <CategoryEdit />,
       protected: true,
-      props: { anotherProp: "anotherValue" }
+      props: { permission: "UPDATE-CATEGORY" }
     },
-    { path: "/unit", element: <UnitIndex />, protected: true, props: {} },
+    {
+      path: "/unit",
+      element: <UnitIndex />,
+      protected: true,
+      props: { permission: "VIEW-UNIT" }
+    },
     {
       path: "/unit/create",
       element: <UnitCreate />,
       protected: true,
-      props: {}
+      props: { permission: "CREATE-UNIT" }
     },
     {
       path: "/unit/:id/edit",
       element: <UnitEdit />,
       protected: true,
-      props: {}
+      props: { permission: "UPDATE-UNIT" }
     },
-    { path: "/product", element: <ProductIndex />, protected: true, props: {} },
+    {
+      path: "/product",
+      element: <ProductIndex />,
+      protected: true,
+      props: { permission: "VIEW-PRODUCT" }
+    },
     {
       path: "/product/create",
       element: <ProductCreate />,
       protected: true,
-      props: {}
+      props: { permission: "CREATE-PRODUCT" }
     },
     {
       path: "/product/:id/edit",
       element: <ProductEdit />,
       protected: true,
-      props: {}
+      props: { permission: "UPDATE-PRODUCT" }
     },
-    { path: "/user", element: <UserIndex />, protected: true, props: {} },
+    {
+      path: "/user",
+      element: <UserIndex />,
+      protected: true,
+      props: { permission: "VIEW-USER" }
+    },
     {
       path: "/user/create",
       element: <UserCreate />,
       protected: true,
-      props: {}
+      props: { permission: "CREATE-USER" }
     },
     {
       path: "/user/:id/edit",
       element: <UserEdit />,
       protected: true,
-      props: {}
+      props: { permission: "UPDATE-USER" }
     },
-    { path: "/role", element: <RoleIndex />, protected: true, props: {} },
+    {
+      path: "/role",
+      element: <RoleIndex />,
+      protected: true,
+      props: {
+        permission: "VIEW-ROLE"
+      }
+    },
     {
       path: "/role/create",
       element: <RoleCreate />,
       protected: true,
-      props: {}
+      props: {
+        permission: "CREATE-ROLE"
+      }
     },
     {
       path: "/role/:id/edit",
       element: <RoleEdit />,
       protected: true,
-      props: {}
+      props: {
+        permission: "UPDATE-ROLE"
+      }
     }
   ];
 

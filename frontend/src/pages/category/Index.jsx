@@ -8,11 +8,13 @@ import SearchInput from "../../components/input/SearchInput";
 import CustomDatatable from "../../components/table/CustomDatatable";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
+import usePermission from "../../hooks/usePermission";
 
-export default function CategoryIndex(){
+export default function CategoryIndex() {
+    const {can, canAny} = usePermission();
     const title = "Category";
     const [data, setData] = useState([]);
-     const [tableState, setTableState] = useState({
+    const [tableState, setTableState] = useState({
         page: 1,
         perPage: 10,
         sortColumn: 1,
@@ -31,7 +33,7 @@ export default function CategoryIndex(){
         setLoading(true);
         try {
             const { page, perPage, sortColumn, sortOrder } = tableState;
-            const response = await CategoryService.getDatatable(
+            const response = await CategoryService.getAll(
                 page,
                 perPage,
                 search,
@@ -86,12 +88,17 @@ export default function CategoryIndex(){
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/category/${record.id}/edit`});
-                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
-                return <ButtonDropdown
+                if (can("UPDATE-CATEGORY")) {
+                    items.push({ label: "Edit", type: "link", link: `/category/${record.id}/edit`});
+                }
+                if(can("DELETE-CATEGORY")) {
+                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
+                }
+                const btnOption = canAny(["UPDATE-CATEGORY","DELETE-CATEGORY"]) && <ButtonDropdown
                     title="Options"
                     items={items}
                 />
+                return btnOption;
             },
             width: 40
         },
@@ -104,7 +111,7 @@ export default function CategoryIndex(){
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <LayoutsAuth title={title} button={<ButtonCreate link={'/category/create'} name={'Create Category'} />}>
+            <LayoutsAuth title={title} button={ can("CREATE-CATEGORY") &&(<ButtonCreate link={'/category/create'} name={'Create Category'} />) }>
                 <Cards>
                     <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
                     <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>

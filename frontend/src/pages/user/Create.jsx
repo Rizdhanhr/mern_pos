@@ -8,7 +8,7 @@ import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link } from "react-router-dom";
 import UserService from "../../services/userService";
-import RoleService from "../../services/RoleService";
+
 
 export default function UserCreate(){
     const title = "Create User";
@@ -32,7 +32,7 @@ export default function UserCreate(){
     async function getData() {
         setIsLoading(true);
         try {
-            const response = await RoleService.getAll();
+            const response = await UserService.getFormAttributes();
             setRole(response.data.data);
         } catch (error) {
             console.log(error);

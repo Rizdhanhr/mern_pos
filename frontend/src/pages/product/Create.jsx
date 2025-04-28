@@ -7,9 +7,6 @@ import {  InputNumber, Select, Upload, Image, Modal } from "antd";
 import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link } from "react-router-dom";
-import CategoryService from "../../services/categoryService";
-import BrandService from "../../services/brandService";
-import UnitService from "../../services/unitService";
 import ImgCrop from 'antd-img-crop';
 import ProductService from "../../services/productService";
 
@@ -43,15 +40,10 @@ export default function ProductCreate(){
     async function getData() {
         setIsLoading(true);
         try {
-            const [resCategory, resBrand, resUnit] = await Promise.all([
-                CategoryService.getAll(),
-                BrandService.getAll(),
-                UnitService.getAll()
-            ]);
-            
-            setCategory(resCategory.data.data);
-            setUnit(resUnit.data.data);
-            setBrand(resBrand.data.data);
+            const resFormAttributes = await ProductService.getFormAttributes();
+            setCategory(resFormAttributes.data.data.category);
+            setUnit(resFormAttributes.data.data.unit);
+            setBrand(resFormAttributes.data.data.brand);
         } catch (error) {
             console.log(error);
         } finally {

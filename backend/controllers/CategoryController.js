@@ -6,20 +6,6 @@ const CategoryResource = require("../resources/CategoryResource.js");
 class CategoryController {
   static async index(req, res, next) {
     try {
-      const category = await Category.findAll();
-      const response = {
-        success: true,
-        data: CategoryResource.collection(category)
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async getData(req, res, next) {
-    try {
       const {
         page = 1,
         perPage = 10,

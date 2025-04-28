@@ -8,8 +8,11 @@ import SearchInput from "../../components/input/SearchInput";
 import ButtonDropdown from "../../components/button/ButtonDropdown";
 import { alertConfirmDelete, alertSuccess } from "../../components/alert/Alert";
 import CustomDatatable from "../../components/table/CustomDatatable";
+import usePermission from "../../hooks/usePermission";
 
-export default function BrandIndex(){
+
+export default function BrandIndex() {
+    const {can, canAny} = usePermission();
     const title = "Brand";
     const [data, setData] = useState([]);
     const [tableState, setTableState] = useState({
@@ -30,7 +33,7 @@ export default function BrandIndex(){
         setLoading(true);
         try {
             const { page, perPage, sortColumn, sortOrder } = tableState;
-            const response = await BrandService.getDatatable(
+            const response = await BrandService.getAll(
                 page,
                 perPage,
                 search,
@@ -84,12 +87,18 @@ export default function BrandIndex(){
             key: "actions",
             render: (text, record) => {
                 let items = [];
-                items.push({ label: "Edit", type: "link", link: `/brand/${record.id}/edit`});
-                items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
-                return <ButtonDropdown
+                if (can("UPDATE-BRAND")) {
+                    items.push({ label: "Edit", type: "link", link: `/brand/${record.id}/edit`});
+                }
+                if (can("DELETE-BRAND")) {
+                    items.push({ label: "Delete", type: "action", onClick: () => alertConfirmDelete(() => deleteData(record.id)) });
+                }
+                const btnOption = canAny(["UPDATE-BRAND","DELETE-BRAND"]) && <ButtonDropdown
                     title="Options"
                     items={items}
-                />
+                />;
+                
+                return btnOption;
             },
             width: 100
         },
@@ -100,7 +109,7 @@ export default function BrandIndex(){
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            <LayoutsAuth title={title} button={<ButtonCreate link={'/brand/create'} name={'Create Brand'} />}>
+            <LayoutsAuth title={title} button={ can("CREATE-BRAND") && (<ButtonCreate link={'/brand/create'} name={'Create Brand'} />) }>
                 <Cards>
                     <SearchInput search={search} setSearch={setSearch} setTableState={setTableState} />
                     <CustomDatatable dataSource={data} columns={columns} loading={loading} tableState={tableState} setTableState={setTableState} total={total}/>

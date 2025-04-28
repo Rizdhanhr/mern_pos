@@ -6,20 +6,6 @@ const BrandResource = require("../resources/BrandResource.js");
 class BrandController {
   static async index(req, res, next) {
     try {
-      const brand = await Brand.findAll();
-      const response = {
-        success: true,
-        data: BrandResource.collection(brand)
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async getData(req, res, next) {
-    try {
       const {
         page = 1,
         perPage = 10,

@@ -3,7 +3,7 @@ import LayoutsAuth from "../../layouts/LayoutsAuth";
 import { Helmet } from "react-helmet-async";
 import { Cards } from "../../components/card/Card";
 import LoadingOverlay from "../../components/loading/LoadingOverlay";
-import RoleService from "../../services/RoleService";
+import RoleService from "../../services/roleService";
 import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link, useParams } from "react-router-dom";
@@ -34,7 +34,7 @@ export default function RoleEdit() {
         try {
             setIsLoading(true);
             const [resRolePermission, resData] = await Promise.all([
-                RoleService.getRolePermission(),
+                RoleService.getFormAttributes(),
                 RoleService.getById(id)
             ]);
             const dataAll = resRolePermission.data.data;

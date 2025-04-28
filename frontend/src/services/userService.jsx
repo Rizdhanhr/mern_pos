@@ -1,15 +1,15 @@
 import React from "react";
-import axiosInstance from "./axiosInstance";
+import axiosService from "./axiosService";
 
 class UserService {
-  static getDatatable(
+  static getAll(
     page = 1,
     perPage = 10,
     search = "",
     sortColumn = 0,
     sortOrder = "ascend"
   ) {
-    return axiosInstance.get("/user", {
+    return axiosService.get("/user", {
       params: {
         page: page,
         perPage: perPage,
@@ -20,20 +20,24 @@ class UserService {
     });
   }
 
+  static getFormAttributes() {
+    return axiosService.get(`/user/form-attributes`);
+  }
+
   static getById(id) {
-    return axiosInstance.get(`/user/${id}`);
+    return axiosService.get(`/user/${id}`);
   }
 
   static create(data) {
-    return axiosInstance.post("/user", data);
+    return axiosService.post("/user", data);
   }
 
   static update(id, data) {
-    return axiosInstance.put(`/user/${id}`, data);
+    return axiosService.put(`/user/${id}`, data);
   }
 
   static delete(id) {
-    return axiosInstance.delete(`/user/${id}`);
+    return axiosService.delete(`/user/${id}`);
   }
 }
 

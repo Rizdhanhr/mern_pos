@@ -1,13 +1,12 @@
 import React, { children } from "react";
 import PageHeader from "./Header";
 import Navbar from "./Navbar";
-import { Provider } from "react-redux";
-import store from "../store";
+
 export default function LayoutsAuth({children,title,button}){
 
     return(
         <>
-            <Provider store={store}>
+            {/* <Provider store={store}> */}
             <div className="page">
                     <Navbar/>
                     
@@ -21,7 +20,7 @@ export default function LayoutsAuth({children,title,button}){
                     </div>
                 </div>
             </div>
-            </Provider>
+            {/* </Provider> */}
     </>
     )
 

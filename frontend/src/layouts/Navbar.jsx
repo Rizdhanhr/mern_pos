@@ -1,20 +1,13 @@
-import React, { useEffect } from "react";
-import Logo from "../assets/nav_logo.png";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { removeToken } from "../utils/authHelper";
-import { useSelector, useDispatch } from "react-redux";
-import { getUserData } from "../store/userSlice";
+import useAuth from "../hooks/useAuth";
+import usePermission from "../hooks/usePermission";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.userInfo);
-
-  useEffect(() => {
-    if (!user) {
-      dispatch(getUserData());
-    }
-  }, [dispatch, user]);
-
+  const { user, handleLogout } = useAuth();
+  const { can, canAny } = usePermission();
+  const navigate = useNavigate();
   const location = useLocation();
   const isActive = (paths) => {
     return paths.some((path) => {
@@ -26,8 +19,8 @@ export default function Navbar() {
   };
 
   async function signOut() {
-    await removeToken();
-    window.location.href = "/login";
+    await handleLogout();
+    navigate("/login");
   }
 
   return (
@@ -97,108 +90,126 @@ export default function Navbar() {
                     <span className="nav-link-title">Home</span>
                   </Link>
                 </li>
-                <li
-                  className={`nav-item dropdown ${
-                    isActive(["/brand", "/category", "/product","/unit"])
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#navbar-base"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                    role="button"
-                    aria-expanded="false"
+
+                {canAny([
+                  "VIEW-BRAND",
+                  "VIEW-CATEGORY",
+                  "VIEW-PRODUCT",
+                  "VIEW-UNIT"
+                ]) && (
+                  <li
+                    className={`nav-item dropdown ${
+                      isActive(["/brand", "/category", "/product", "/unit"])
+                        ? "active"
+                        : ""
+                    }`}
                   >
-                    <i className="bi bi-book"></i>
-                    &nbsp;
-                    <span className="nav-link-title">Master</span>
-                  </a>
-                  <div className="dropdown-menu">
-                    <div className="dropdown-menu-columns">
-                      <div className="dropdown-menu-column">
-                        <Link
-                          className={`dropdown-item ${
-                            isActive(["/brand"]) ? "active" : ""
-                          }`}
-                          to={"/brand"}
-                        >
-                          Brand
-                        </Link>
-                        <Link
-                          className={`dropdown-item ${
-                            isActive(["/category"]) ? "active" : ""
-                          }`}
-                          to={"/category"}
-                        >
-                          Category
-                        </Link>
-                        <Link
-                          className={`dropdown-item ${
-                            isActive(["/product"]) ? "active" : ""
-                          }`}
-                          to={"/product"}
-                        >
-                          Product
-                        </Link>
-                         <Link
-                          className={`dropdown-item ${
-                            isActive(["/unit"]) ? "active" : ""
-                          }`}
-                          to={"/unit"}
-                        >
-                          Unit
-                        </Link>
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#navbar-base"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="outside"
+                      role="button"
+                      aria-expanded="false"
+                    >
+                      <i className="bi bi-book"></i>
+                      &nbsp;
+                      <span className="nav-link-title">Master</span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          {can("VIEW-BRAND") && (
+                            <Link
+                              className={`dropdown-item ${
+                                isActive(["/brand"]) ? "active" : ""
+                              }`}
+                              to={"/brand"}
+                            >
+                              Brand
+                            </Link>
+                          )}
+                          {can("VIEW-CATEGORY") && (
+                            <Link
+                              className={`dropdown-item ${
+                                isActive(["/category"]) ? "active" : ""
+                              }`}
+                              to={"/category"}
+                            >
+                              Category
+                            </Link>
+                          )}
+                          {can("VIEW-PRODUCT") && (
+                            <Link
+                              className={`dropdown-item ${
+                                isActive(["/product"]) ? "active" : ""
+                              }`}
+                              to={"/product"}
+                            >
+                              Product
+                            </Link>
+                          )}
+                          {can("VIEW-UNIT") && (
+                            <Link
+                              className={`dropdown-item ${
+                                isActive(["/unit"]) ? "active" : ""
+                              }`}
+                              to={"/unit"}
+                            >
+                              Unit
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-                
-                <li
-                  className={`nav-item dropdown ${
-                    isActive(["/user", "/role"])
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#navbar-base"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                    role="button"
-                    aria-expanded="false"
+                  </li>
+                )}
+                {canAny(["VIEW-USER", "VIEW-ROLE"]) && (
+                  <li
+                    className={`nav-item dropdown ${
+                      isActive(["/user", "/role"]) ? "active" : ""
+                    }`}
                   >
-                    <i className="bi bi-person-fill-gear"></i>
-                    &nbsp;
-                    <span className="nav-link-title">Access Control</span>
-                  </a>
-                  <div className="dropdown-menu">
-                    <div className="dropdown-menu-columns">
-                      <div className="dropdown-menu-column">
-                        <Link
-                          className={`dropdown-item ${
-                            isActive(["/role"]) ? "active" : ""
-                          }`}
-                          to={"/role"}
-                        >
-                          Role
-                        </Link>
-                        <Link
-                          className={`dropdown-item ${
-                            isActive(["/user"]) ? "active" : ""
-                          }`}
-                          to={"/user"}
-                        >
-                          User
-                        </Link>
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#navbar-base"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="outside"
+                      role="button"
+                      aria-expanded="false"
+                    >
+                      <i className="bi bi-person-fill-gear"></i>
+                      &nbsp;
+                      <span className="nav-link-title">Access Control</span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          {can("VIEW-ROLE") && (
+                            <Link
+                              className={`dropdown-item ${
+                                isActive(["/role"]) ? "active" : ""
+                              }`}
+                              to={"/role"}
+                            >
+                              Role
+                            </Link>
+                          )}
+                          {can("VIEW-USER") && (
+                            <Link
+                              className={`dropdown-item ${
+                                isActive(["/user"]) ? "active" : ""
+                              }`}
+                              to={"/user"}
+                            >
+                              User
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-                
+                  </li>
+                )}
               </ul>
             </div>
           </div>

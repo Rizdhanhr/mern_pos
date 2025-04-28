@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { Cards } from "../../components/card/Card";
 import LoadingOverlay from "../../components/loading/LoadingOverlay";
 import UserService from "../../services/userService";
-import RoleService from "../../services/RoleService";
 import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link, useParams } from "react-router-dom";
@@ -35,7 +34,7 @@ export default function UserEdit() {
             setIsLoading(true);
             const [resUser, resRole] = await Promise.all([
                 UserService.getById(id),
-                RoleService.getAll(),
+                UserService.getFormAttributes(),
             ]);
             const editData = resUser.data.data;
             setRole(resRole.data.data);

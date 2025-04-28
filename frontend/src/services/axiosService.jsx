@@ -5,7 +5,7 @@ import navigateHelper from "../utils/navigateHelper";
 import { alertError } from "../components/alert/Alert";
 
 const link = import.meta.env.VITE_BACKEND_URL;
-const axiosInstance = axios.create({
+const axiosService = axios.create({
   baseURL: link,
   timeout: 10000,
   withCredentials: true 
@@ -24,7 +24,7 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-axiosInstance.interceptors.request.use(
+axiosService.interceptors.request.use(
   config => {
     const token = getToken();
     if (token) {
@@ -39,7 +39,7 @@ axiosInstance.interceptors.request.use(
 );
 
 
-axiosInstance.interceptors.response.use(
+axiosService.interceptors.response.use(
   (response) => response, 
   async (error) => {
     if (error.response) {
@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
             failedQueue.push({
               resolve: (token) => {
                 originalRequest.headers["Authorization"] = `Bearer ${token}`;
-                resolve(axiosInstance(originalRequest));
+                resolve(axiosService(originalRequest));
               },
               reject: (err) => reject(err),
             });
@@ -64,10 +64,10 @@ axiosInstance.interceptors.response.use(
           const response = await AuthService.refreshToken();
           const newToken = response.data.token;
           setToken(newToken); 
-          axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${newToken}`; 
+          axiosService.defaults.headers.common["Authorization"] = `Bearer ${newToken}`; 
           processQueue(null, newToken); 
           originalRequest.headers["Authorization"] = `Bearer ${newToken}`; 
-          return axiosInstance(originalRequest); 
+          return axiosService(originalRequest); 
         } catch (err) {
           processQueue(err, null);
           removeToken();
@@ -77,9 +77,9 @@ axiosInstance.interceptors.response.use(
           isRefresh = false; 
         }    
       } else if (status >= 500) {
-        // navigateHelper.navigate("/error/500");
+        navigateHelper.navigate("/error/500");
       } else if (status === 403) {
-        // navigateHelper.navigate("/error/403");
+        navigateHelper.navigate("/error/403");
       } else if (status === 404) {
         // navigateHelper.navigate("/error/404");
       } else if (status === 409) {
@@ -92,4 +92,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosService;

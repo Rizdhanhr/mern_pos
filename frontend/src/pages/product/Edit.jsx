@@ -7,9 +7,6 @@ import {  InputNumber, Select, Upload, Image, Modal } from "antd";
 import { alertSuccess } from "../../components/alert/Alert";
 import { errorValidation } from "../../utils/errorParser";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import CategoryService from "../../services/categoryService";
-import BrandService from "../../services/brandService";
-import UnitService from "../../services/unitService";
 import ImgCrop from 'antd-img-crop';
 import ProductService from "../../services/productService";
 
@@ -44,10 +41,8 @@ export default function ProductEdit(){
     async function getData() {
         setIsLoading(true);
         try {
-            const [resCategory, resBrand, resUnit, resData] = await Promise.all([
-                CategoryService.getAll(),
-                BrandService.getAll(),
-                UnitService.getAll(),
+            const [resFormAttributes, resData] = await Promise.all([
+                ProductService.getFormAttributes(),
                 ProductService.getById(id)
             ]);
             const editData = resData.data.data;
@@ -69,9 +64,9 @@ export default function ProductEdit(){
                     url: import.meta.env.VITE_IMAGE_URL + "/product/" + editData.images,
                 },
             ]);
-            setCategory(resCategory.data.data);
-            setBrand(resBrand.data.data);
-            setUnit(resUnit.data.data);
+            setCategory(resFormAttributes.data.data.category);
+            setBrand(resFormAttributes.data.data.brand);
+            setUnit(resFormAttributes.data.data.unit);
         } catch (error) {
             console.log(error);
         }finally{

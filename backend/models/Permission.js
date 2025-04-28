@@ -36,6 +36,7 @@ setImmediate(() => {
   Permission.belongsToMany(sequelize.models.Role, {
     through: "role_permission",
     foreignKey: "permission_id",
+    as: "role",
     timestamps: false
   });
 });

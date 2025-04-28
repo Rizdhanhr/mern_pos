@@ -8,23 +8,34 @@ const {
   validateImage,
   validateImageEdit
 } = require("../middlewares/uploadMiddleware.js");
+const checkPermission = require("../middlewares/authorizationMiddleware.js");
 
-router.get("/", ProductController.index);
-router.get("/data", ProductController.getData);
+router.get("/", checkPermission("CREATE-PRODUCT"), ProductController.index);
+router.get(
+  "/form-attributes",
+  checkPermission(["CREATE-PRODUCT", "UPDATE-PRODUCT"]),
+  ProductController.getFormAttributes
+);
 router.post(
   "/",
+  checkPermission("CREATE-PRODUCT"),
   validateImage,
   ProductValidator.create(),
   validationMessage,
   ProductController.store
 );
-router.get("/:id", ProductController.show);
+router.get("/:id", checkPermission("VIEW-PRODUCT"), ProductController.show);
 router.put(
   "/:id",
+  checkPermission("UPDATE-PRODUCT"),
   validateImageEdit,
   ProductValidator.edit(),
   validationMessage,
   ProductController.update
 );
-router.delete("/:id", ProductController.delete);
+router.delete(
+  "/:id",
+  checkPermission("DELETE-PRODUCT"),
+  ProductController.delete
+);
 module.exports = router;
